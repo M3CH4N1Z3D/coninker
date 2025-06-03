@@ -1,22 +1,22 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { X, Package } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { X, Package } from "lucide-react";
 
 export function PromoModal() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsOpen(true)
-    }, 3000)
+      setIsOpen(true);
+    }, 3000);
 
-    return () => clearTimeout(timer)
-  }, [])
+    return () => clearTimeout(timer);
+  }, []);
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -39,7 +39,7 @@ export function PromoModal() {
           <p className="mb-2">Hola, bienvenido a Coninker</p>
           <p className="mb-6">Tu estilo, tus cosas, tu espacio.</p>
           <p className="mb-6 font-semibold">
-            Lo que sueñas nosotros lo llevamos. ¡Envío gratis en todos los pedidos! 📦
+            Lo que sueñas nosotros lo llevamos. ¡Envío a toda Colombia! 📦
           </p>
 
           <Button
@@ -48,14 +48,8 @@ export function PromoModal() {
           >
             ¡Comprar ahora!
           </Button>
-
-          <p className="text-xs text-amber-200 mt-4">
-            Descuento válido por el mes de ENERO
-            <br />
-            en nuestra página WEB
-          </p>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

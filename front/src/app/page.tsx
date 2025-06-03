@@ -4,18 +4,16 @@ import { About } from "@/components/about";
 import { Categories } from "@/components/categories";
 import { FeaturedProducts } from "@/components/featured-products";
 import { Contact } from "@/components/contact";
-import { Footer } from "@/components/footer";
 import { PromoModal } from "@/components/promo-modal";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-white">
       <Hero />
-      <About />
       <Categories />
       <FeaturedProducts />
+      <About />
       <Contact />
-      <Footer />
       <PromoModal />
     </main>
   );

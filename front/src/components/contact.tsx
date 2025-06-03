@@ -6,7 +6,7 @@ import { Mail, Phone, MapPin } from "lucide-react";
 
 export function Contact() {
   return (
-    <section id="contacto" className="py-20 bg-white">
+    <section id="contacto" className="py-20 bg-[#FBDB93]">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">
           Contacta con nosotros
@@ -40,7 +40,7 @@ export function Contact() {
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">Teléfono</p>
-                  <p className="text-gray-600">+1 (555) 123-4567</p>
+                  <p className="text-gray-600">Numero de telefono</p>
                 </div>
               </div>
 
@@ -50,7 +50,7 @@ export function Contact() {
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">Showroom</p>
-                  <p className="text-gray-600">Ciudad de México, México</p>
+                  <p className="text-gray-600">Cartagago, Valle del Cauca</p>
                 </div>
               </div>
             </div>

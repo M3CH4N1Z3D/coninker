@@ -1,64 +1,137 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useToast } from "@/components/ui/use-toast"
-import { useCart } from "@/context/cart-context"
-import type { Product } from "@/lib/types"
-import { Minus, Plus, Heart, Share2, Truck, RotateCcw, Check } from "lucide-react"
+import { useState } from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/components/ui/use-toast";
+import { useCart } from "@/context/cart-context";
+import type { Product } from "@/lib/types";
+import {
+  Minus,
+  Plus,
+  Heart,
+  Share2,
+  Truck,
+  RotateCcw,
+  Check,
+} from "lucide-react";
 
 interface ProductDetailProps {
-  product: Product
+  product: Product;
 }
 
 export function ProductDetail({ product }: ProductDetailProps) {
-  const [quantity, setQuantity] = useState(1)
-  const [selectedImage, setSelectedImage] = useState(0)
-  const { addToCart } = useCart()
-  const { toast } = useToast()
-
+  const [quantity, setQuantity] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(0);
+  const { addToCart } = useCart();
+  const { toast } = useToast();
+  const [selectedColor, setSelectedColor] = useState(
+    product.colors?.[0] || "#000000"
+  );
+  const colorImages = [...Array(4)].map(
+    (_, index) =>
+      `/instagram/${product.id}/${selectedColor.replace("#", "")}/${
+        product.id
+      }${index + 1}.webp`
+  );
+  const productVideo = `/instagram/${product.id}/videos/${product.id}.mp4`;
   const handleAddToCart = () => {
-    addToCart(product, quantity)
+    const productWithColor = {
+      ...product, // Copia todas las propiedades del producto
+      selectedColor, // Agrega el color seleccionado
+    };
+
+    addToCart(productWithColor, quantity); // Ahora `selectedColor` se incluirá
+
     toast({
       title: "Producto añadido",
       description: `${product.name} se ha añadido a tu carrito`,
-    })
-  }
+    });
+  };
 
   const incrementQuantity = () => {
-    setQuantity((prev) => prev + 1)
-  }
+    setQuantity((prev) => prev + 1);
+  };
 
   const decrementQuantity = () => {
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1))
-  }
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  };
+
+  const getContrastColor = (hexColor: string) => {
+    // Remueve el "#" si está presente
+    const cleanHex = hexColor.replace("#", "");
+
+    // Convierte el hex en valores RGB
+    const r = parseInt(cleanHex.substring(0, 2), 16);
+    const g = parseInt(cleanHex.substring(2, 4), 16);
+    const b = parseInt(cleanHex.substring(4, 6), 16);
+
+    // Calcula el brillo usando la fórmula de luminancia relativa
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+    // Si el brillo es bajo, usa texto blanco, si es alto, usa texto negro
+    return brightness > 128 ? "#000000" : "#FFFFFF";
+  };
+
+  const textColor = getContrastColor(selectedColor);
 
   return (
-    <section className="py-12">
+    <section
+      className="py-12 inset-0 bg-black/20 transition-colors duration-1000"
+      style={{ backgroundColor: selectedColor, color: textColor }}
+    >
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Images */}
-          <div className="space-y-4">
+          <div className="space-y-4 relative">
+            {/* Imagen o Video principal */}
             <div className="relative aspect-square overflow-hidden bg-gray-100">
-              <Image
-                src={product.images[selectedImage] || "/placeholder.svg?height=600&width=600"}
-                alt={product.name}
-                fill
-                className="object-cover"
-              />
+              {selectedImage < colorImages.length ? (
+                <Image
+                  src={colorImages[selectedImage]}
+                  alt={product.name}
+                  fill
+                  className="object-cover transition-opacity duration-500 ease-in-out opacity-100"
+                />
+              ) : (
+                <video
+                  className="w-full h-full rounded-lg shadow-md"
+                  autoPlay
+                  muted
+                >
+                  <source src={productVideo} type="video/mp4" />
+                </video>
+              )}
             </div>
-            <div className="grid grid-cols-4 gap-4">
-              {product.images.map((image, index) => (
+
+            {/* Miniaturas sobre la imagen grande */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+              {colorImages.map((image, index) => (
                 <button
                   key={index}
-                  className={`relative aspect-square overflow-hidden bg-gray-100 ${
+                  className={`relative w-16 h-16 overflow-hidden bg-gray-100 rounded-lg ${
                     selectedImage === index ? "ring-2 ring-amber-500" : ""
                   }`}
                   onClick={() => setSelectedImage(index)}
                 >
-                  <Image src={image || "/placeholder.svg?height=150&width=150"} alt="" fill className="object-cover" />
+                  <Image src={image} alt="" fill className="object-cover" />
+                </button>
+              ))}
+
+              {product.videos?.map((video, index) => (
+                <button
+                  key={`video-${index}`}
+                  className={`relative w-16 h-16 overflow-hidden bg-gray-100 rounded-lg ${
+                    selectedImage === index + colorImages.length
+                      ? "ring-2 ring-amber-500"
+                      : ""
+                  }`}
+                  onClick={() => setSelectedImage(index + colorImages.length)}
+                >
+                  <video className="object-cover w-full h-full">
+                    <source src={productVideo} type="video/mp4" />
+                  </video>
                 </button>
               ))}
             </div>
@@ -68,13 +141,15 @@ export function ProductDetail({ product }: ProductDetailProps) {
           <div className="space-y-6">
             <div>
               <p className="text-amber-600 font-medium">{product.category}</p>
-              <h1 className="text-3xl font-bold text-gray-900 mt-1">{product.name}</h1>
+              <h1 className="text-3xl font-bold mt-1">{product.name}</h1>
               <div className="flex items-center gap-2 mt-2">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
                     <svg
                       key={i}
-                      className={`w-5 h-5 ${i < product.rating ? "text-yellow-400" : "text-gray-300"}`}
+                      className={`w-5 h-5 ${
+                        i < product.rating ? "text-yellow-400" : "text-gray-300"
+                      }`}
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -82,11 +157,11 @@ export function ProductDetail({ product }: ProductDetailProps) {
                     </svg>
                   ))}
                 </div>
-                <span className="text-gray-500 text-sm">({product.reviewCount} reseñas)</span>
+                <span className="text-sm">({product.reviewCount} reseñas)</span>
               </div>
             </div>
 
-            <p className="text-3xl font-bold text-gray-900">${product.price.toFixed(2)}</p>
+            <p className="text-3xl font-bold">${product.price.toFixed(2)}</p>
 
             <div className="prose prose-gray max-w-none">
               <p>{product.description}</p>
@@ -97,36 +172,36 @@ export function ProductDetail({ product }: ProductDetailProps) {
               <h3 className="font-semibold mb-2">Dimensiones:</h3>
               <div className="grid grid-cols-3 gap-4 text-sm">
                 <div>
-                  <p className="text-gray-500">Ancho</p>
+                  <p>Ancho</p>
                   <p className="font-medium">{product.dimensions.width} cm</p>
                 </div>
                 <div>
-                  <p className="text-gray-500">Alto</p>
+                  <p>Alto</p>
                   <p className="font-medium">{product.dimensions.height} cm</p>
                 </div>
                 <div>
-                  <p className="text-gray-500">Profundidad</p>
+                  <p>Profundidad</p>
                   <p className="font-medium">{product.dimensions.depth} cm</p>
                 </div>
               </div>
             </div>
 
-            {/* Color options if available */}
-            {product.colors && product.colors.length > 0 && (
-              <div>
-                <h3 className="font-semibold mb-2">Color:</h3>
-                <div className="flex gap-2">
-                  {product.colors.map((color, index) => (
-                    <button
-                      key={index}
-                      className="w-8 h-8 rounded-full border"
-                      style={{ backgroundColor: color }}
-                      aria-label={`Color ${index + 1}`}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Botones para seleccionar color */}
+            <div className="mt-4 flex gap-2">
+              {product.colors?.map((color, index) => (
+                <button
+                  key={index}
+                  className={`w-8 h-8 rounded-full border ${
+                    selectedColor === color ? "ring-2 ring-amber-500" : ""
+                  }`}
+                  style={{ backgroundColor: color }}
+                  onClick={() => {
+                    setSelectedColor(color);
+                    setSelectedImage(0); // ✅ Restablece la imagen al cambiar de color
+                  }}
+                />
+              ))}
+            </div>
 
             {/* Add to cart section */}
             <div className="flex flex-col space-y-4">
@@ -142,16 +217,21 @@ export function ProductDetail({ product }: ProductDetailProps) {
                     <Minus className="h-4 w-4" />
                   </Button>
                   <span className="w-12 text-center">{quantity}</span>
-                  <Button variant="ghost" size="icon" className="rounded-none" onClick={incrementQuantity}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-none"
+                    onClick={incrementQuantity}
+                  >
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
-                <p className="ml-4 text-sm text-gray-500">
+                <p className="ml-4 text-sm">
                   {product.stock > 10
                     ? "En stock"
                     : product.stock > 0
-                      ? `Solo ${product.stock} disponibles`
-                      : "Agotado"}
+                    ? `Solo ${product.stock} disponibles`
+                    : "Agotado"}
                 </p>
               </div>
 
@@ -164,10 +244,13 @@ export function ProductDetail({ product }: ProductDetailProps) {
                 >
                   Añadir al carrito
                 </Button>
-                <Button variant="outline" size="icon" className="rounded-md">
-                  <Heart className="h-5 w-5" />
-                </Button>
-                <Button variant="outline" size="icon" className="rounded-md">
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-md"
+                  style={{ backgroundColor: selectedColor }}
+                >
                   <Share2 className="h-5 w-5" />
                 </Button>
               </div>
@@ -197,19 +280,19 @@ export function ProductDetail({ product }: ProductDetailProps) {
             <TabsList className="w-full justify-start border-b rounded-none bg-transparent h-auto p-0">
               <TabsTrigger
                 value="description"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-amber-600 data-[state=active]:bg-transparent px-8 py-3"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-amber-600 data-[state=active]:bg-amber-600 px-8 py-3"
               >
                 Descripción
               </TabsTrigger>
               <TabsTrigger
                 value="specifications"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-amber-600 data-[state=active]:bg-transparent px-8 py-3"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-amber-600 data-[state=active]:bg-amber-600 px-8 py-3"
               >
                 Especificaciones
               </TabsTrigger>
               <TabsTrigger
                 value="reviews"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-amber-600 data-[state=active]:bg-transparent px-8 py-3"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-amber-600 data-[state=active]:bg-amber-600 px-8 py-3"
               >
                 Reseñas ({product.reviewCount})
               </TabsTrigger>
@@ -225,7 +308,10 @@ export function ProductDetail({ product }: ProductDetailProps) {
                   <h3 className="font-semibold mb-4">Detalles del producto</h3>
                   <ul className="space-y-2">
                     {product.specifications.map((spec, index) => (
-                      <li key={index} className="flex justify-between py-2 border-b">
+                      <li
+                        key={index}
+                        className="flex justify-between py-2 border-b"
+                      >
                         <span className="text-gray-500">{spec.name}</span>
                         <span className="font-medium">{spec.value}</span>
                       </li>
@@ -236,8 +322,11 @@ export function ProductDetail({ product }: ProductDetailProps) {
                   <h3 className="font-semibold mb-4">Materiales</h3>
                   <ul className="space-y-2">
                     {product.materials.map((material, index) => (
-                      <li key={index} className="flex justify-between py-2 border-b">
-                        <span className="text-gray-500">{material.part}</span>
+                      <li
+                        key={index}
+                        className="flex justify-between py-2 border-b"
+                      >
+                        <span>{material.part}</span>
                         <span className="font-medium">{material.material}</span>
                       </li>
                     ))}
@@ -252,13 +341,17 @@ export function ProductDetail({ product }: ProductDetailProps) {
                     <div className="flex justify-between mb-2">
                       <div>
                         <p className="font-medium">{review.author}</p>
-                        <p className="text-sm text-gray-500">{review.date}</p>
+                        <p className="text-sm ">{review.date}</p>
                       </div>
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
                           <svg
                             key={i}
-                            className={`w-4 h-4 ${i < review.rating ? "text-yellow-400" : "text-gray-300"}`}
+                            className={`w-4 h-4 ${
+                              i < review.rating
+                                ? "text-yellow-400"
+                                : "text-gray-300"
+                            }`}
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
@@ -276,5 +369,5 @@ export function ProductDetail({ product }: ProductDetailProps) {
         </div>
       </div>
     </section>
-  )
+  );
 }

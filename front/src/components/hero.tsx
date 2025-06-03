@@ -5,9 +5,9 @@ export function Hero() {
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 bg-neutral-900/40"></div>
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 hero-bounce">
         <Image
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/instagram/imagen1.webp"
           alt="Interior de hogar moderno"
           fill
           className="object-cover"

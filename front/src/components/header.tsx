@@ -1,14 +1,9 @@
 import Link from "next/link";
-import {
-  Search,
-  User,
-  Instagram,
-  Facebook,
-  Twitter,
-  Linkedin,
-} from "lucide-react";
+import { User, Instagram, Facebook, Twitter, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CartDropdown } from "@/components/cart-dropdown";
+import { SearchBar } from "@/components/search-bar";
+import categories from "@/lib/categories";
 
 export function Header() {
   return (
@@ -37,22 +32,20 @@ export function Header() {
       </div>
 
       {/* Main header */}
-      <div className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-8">
-            <Button variant="ghost" size="icon">
-              <Search className="h-5 w-5" />
-            </Button>
+      <div className="bg-[var(--backgroung)] shadow-sm">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between gap-8">
+          <div className="flex items-center flex-1">
+            <SearchBar />
           </div>
 
-          <Link href="/" className="text-2xl font-bold text-gray-900">
-            con<span className="text-amber-600">inker</span>
+          <Link
+            href="/"
+            className="text-2xl font-bold text-gray-900 flex-shrink-0"
+          >
+            cón<span className="text-[#8A2D3B]">inker</span>
           </Link>
 
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
-            </Button>
+          <div className="flex items-center space-x-4 flex-shrink-0">
             <CartDropdown />
           </div>
         </div>
@@ -61,20 +54,22 @@ export function Header() {
         <nav className="border-t">
           <div className="container mx-auto px-4">
             <div className="flex justify-center space-x-8 py-4">
+              {categories.map((category) => (
+                <Link
+                  key={category.title}
+                  href={`/${category.title
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")}`}
+                  className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+                >
+                  {category.title}
+                </Link>
+              ))}
+
+              {/* Mantener "Contacto" en la barra */}
               <Link
-                href="#mobiliario"
-                className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
-              >
-                Mobiliario
-              </Link>
-              <Link
-                href="#decoracion"
-                className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
-              >
-                Decoración
-              </Link>
-              <Link
-                href="#contacto"
+                href={`/#contacto`}
                 className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
               >
                 Contacto

@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fbdb93;
+  --foreground: #050505;
+  --bgSearch: #fdfbee;
 }
 
 @theme inline {
@@ -14,7 +15,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #fbdb93;
     --foreground: #ededed;
   }
 }
@@ -23,4 +24,42 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+/* Animación de rebote sutil para el hero */
+@keyframes subtle-bounce {
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-3px) scale(1.005);
+  }
+}
+
+.hero-bounce {
+  animation: subtle-bounce 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Reducir la animación en dispositivos que prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .hero-bounce {
+    animation: none;
+  }
+}
+
+/* Variante aún más sutil para pantallas pequeñas */
+@media (max-width: 768px) {
+  @keyframes subtle-bounce-mobile {
+    0%,
+    100% {
+      transform: translateY(0px) scale(1);
+    }
+    50% {
+      transform: translateY(-2px) scale(1.003);
+    }
+  }
+
+  .hero-bounce {
+    animation: subtle-bounce-mobile 10s ease-in-out infinite;
+  }
 }

@@ -1,32 +1,38 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useCart } from "@/context/cart-context"
-import { Trash2, Plus, Minus, ArrowRight } from "lucide-react"
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useCart } from "@/context/cart-context";
+import { Trash2, Plus, Minus, ArrowRight } from "lucide-react";
+import shippingRates from "@/lib/shippingRates";
 
 export function CartPage() {
-  const { cart, updateQuantity, removeFromCart, getTotalPrice } = useCart()
-  const [couponCode, setCouponCode] = useState("")
+  const { cart, updateQuantity, removeFromCart, getTotalPrice } = useCart();
+  const [couponCode, setCouponCode] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
 
-  const subtotal = getTotalPrice()
-  const shipping = subtotal > 0 ? 0 : 0 // Free shipping
-  const tax = subtotal * 0.16 // 16% tax
-  const total = subtotal + shipping + tax
+  const subtotal = getTotalPrice();
+  const shipping = selectedCity ? shippingRates[selectedCity] ?? 0 : 0;
+  const tax = subtotal * 0.16; // 16% tax
+  const total = subtotal + shipping + tax;
 
   if (cart.length === 0) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <h1 className="text-3xl font-bold mb-6">Tu carrito está vacío</h1>
-        <p className="text-gray-600 mb-8">Parece que aún no has añadido productos a tu carrito.</p>
+        <p className="text-gray-600 mb-8">
+          Parece que aún no has añadido productos a tu carrito.
+        </p>
         <Link href="/">
-          <Button className="bg-amber-600 hover:bg-amber-700 text-white">Continuar comprando</Button>
+          <Button className="bg-amber-600 hover:bg-amber-700 text-white">
+            Continuar comprando
+          </Button>
         </Link>
       </div>
-    )
+    );
   }
 
   return (
@@ -54,19 +60,22 @@ export function CartPage() {
                         <div className="flex items-center">
                           <div className="relative w-16 h-16 mr-4 bg-gray-100">
                             <Image
-                              src={item.product.images[0] || "/placeholder.svg?height=100&width=100"}
+                              src={
+                                item.product.images[0] ||
+                                "/placeholder.svg?height=100&width=100"
+                              }
                               alt={item.product.name}
                               fill
                               className="object-cover"
                             />
                           </div>
                           <div>
-                            <Link href={`/producto/${item.product.id}`} className="font-medium hover:text-amber-600">
+                            <Link
+                              href={`/producto/${item.product.id}`}
+                              className="font-medium hover:text-amber-600"
+                            >
                               {item.product.name}
                             </Link>
-                            {item.product.selectedColor && (
-                              <p className="text-sm text-gray-500">Color: {item.product.selectedColor}</p>
-                            )}
                           </div>
                         </div>
                       </td>
@@ -76,7 +85,12 @@ export function CartPage() {
                             variant="outline"
                             size="icon"
                             className="h-8 w-8 rounded-full"
-                            onClick={() => updateQuantity(item.product.id, Math.max(1, item.quantity - 1))}
+                            onClick={() =>
+                              updateQuantity(
+                                item.product.id,
+                                Math.max(1, item.quantity - 1)
+                              )
+                            }
                           >
                             <Minus className="h-3 w-3" />
                           </Button>
@@ -85,13 +99,17 @@ export function CartPage() {
                             variant="outline"
                             size="icon"
                             className="h-8 w-8 rounded-full"
-                            onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                            onClick={() =>
+                              updateQuantity(item.product.id, item.quantity + 1)
+                            }
                           >
                             <Plus className="h-3 w-3" />
                           </Button>
                         </div>
                       </td>
-                      <td className="py-4 text-right">${item.product.price.toFixed(2)}</td>
+                      <td className="py-4 text-right">
+                        ${item.product.price.toFixed(2)}
+                      </td>
                       <td className="py-4 text-right font-medium">
                         ${(item.product.price * item.quantity).toFixed(2)}
                       </td>
@@ -134,18 +152,30 @@ export function CartPage() {
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-lg font-semibold mb-4">Resumen del pedido</h2>
             <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+              <div className="flex flex-col space-y-2">
+                {cart.map((item) => (
+                  <div
+                    key={item.product.id}
+                    className="flex justify-between border-b pb-2"
+                  >
+                    <span className="text-gray-700 font-medium">
+                      {item.product.name}
+                    </span>
+                    <span className="flex items-center space-x-2">
+                      <span className="text-gray-500">Color:</span>
+                      <span
+                        className="w-4 h-4 rounded-full border border-gray-300"
+                        style={{ backgroundColor: item.product.selectedColor }}
+                      ></span>
+                    </span>
+
+                    <span className="text-gray-900 font-semibold">
+                      ${(item.product.price * item.quantity).toFixed(2)}
+                    </span>
+                  </div>
+                ))}
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Envío</span>
-                <span>{shipping === 0 ? "Gratis" : `$${shipping.toFixed(2)}`}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Impuestos (16%)</span>
-                <span>${tax.toFixed(2)}</span>
-              </div>
+
               <div className="border-t pt-3 mt-3">
                 <div className="flex justify-between font-semibold">
                   <span>Total</span>
@@ -162,5 +192,5 @@ export function CartPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

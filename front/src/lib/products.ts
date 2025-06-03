@@ -1,21 +1,17 @@
 import type { Product } from "./types";
 
-// Sample product data
+// Sample product data - Expandido con más productos para mejores resultados de búsqueda
 const products: Product[] = [
   {
-    id: "mesa-centro-nordica",
-    name: "Mesa de Centro Nórdica",
+    id: "consola-Marsella",
+    name: "Consola Marsella",
     description:
-      "Mesa de centro con diseño nórdico, perfecta para salas de estar modernas.",
+      "Atractiva como ella sola, te dará un salto de modernidad, diseño y estilo.",
     fullDescription:
-      "Esta elegante mesa de centro con diseño nórdico es perfecta para complementar cualquier sala de estar moderna. Fabricada con materiales de alta calidad, combina funcionalidad y estética con su superficie espaciosa y sus patas de madera maciza. Su diseño minimalista se integra perfectamente en diversos estilos de decoración, desde el escandinavo hasta el contemporáneo.",
+      "Atractiva como ella sola, te dará un salto de modernidad, diseño y estilo.",
     price: 299.99,
-    images: [
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-    ],
+    images: ["/instagram/consola-Marsella/consola-Marsella.webp"],
+    videos: ["/instagram/consola-Marsella/videos/marsella18.mp4"],
     category: "Mesas",
     stock: 15,
     rating: 4.5,
@@ -36,7 +32,7 @@ const products: Product[] = [
       { part: "Patas", material: "Madera maciza de roble" },
       { part: "Herrajes", material: "Acero inoxidable" },
     ],
-    colors: ["#E0C9A6", "#5C4033", "#000000"],
+    colors: ["#E0C9A6", "#355759"],
     reviews: [
       {
         author: "María G.",
@@ -53,6 +49,7 @@ const products: Product[] = [
           "Buena relación calidad-precio. El color es exactamente como en las fotos.",
       },
     ],
+    featured: true,
   },
   {
     id: "silla-ergonomica-moderna",
@@ -68,6 +65,8 @@ const products: Product[] = [
       "/placeholder.svg?height=600&width=600",
       "/placeholder.svg?height=600&width=600",
     ],
+    videos: ["/instagram/consola_Marsella/videos/marsella18.mp4"],
+
     category: "Sillas",
     stock: 8,
     rating: 4.7,
@@ -109,6 +108,7 @@ const products: Product[] = [
           "Muy cómoda y fácil de ajustar. El único inconveniente es que el montaje fue un poco complicado.",
       },
     ],
+    featured: false,
   },
   {
     id: "sofa-modular-gris",
@@ -124,6 +124,8 @@ const products: Product[] = [
       "/placeholder.svg?height=600&width=600",
       "/placeholder.svg?height=600&width=600",
     ],
+    videos: ["/instagram/consola_Marsella/videos/marsella18.mp4"],
+
     category: "Sofás",
     stock: 5,
     rating: 4.8,
@@ -165,6 +167,168 @@ const products: Product[] = [
           "Muy satisfecho con la compra. El proceso de entrega fue rápido y el montaje sencillo.",
       },
     ],
+    featured: true,
+  },
+  {
+    id: "estanteria-minimalista",
+    name: "Estantería Minimalista",
+    description:
+      "Estantería de diseño minimalista con múltiples niveles para organización.",
+    fullDescription:
+      "Esta estantería minimalista combina funcionalidad y estética en un diseño limpio y moderno. Con cinco niveles espaciosos, ofrece amplio espacio de almacenamiento para libros, decoración y objetos personales. Su estructura de metal negro mate y estantes de madera clara la convierten en una pieza versátil que se adapta a cualquier ambiente.",
+    price: 249.99,
+    images: [
+      "/placeholder.svg?height=600&width=600",
+      "/placeholder.svg?height=600&width=600",
+      "/placeholder.svg?height=600&width=600",
+      "/placeholder.svg?height=600&width=600",
+    ],
+    videos: ["/instagram/consola_Marsella/videos/marsella18.mp4"],
+
+    category: "Estanterías",
+    stock: 12,
+    rating: 4.6,
+    reviewCount: 18,
+    dimensions: {
+      width: 80,
+      height: 180,
+      depth: 35,
+    },
+    specifications: [
+      { name: "Material", value: "Metal y madera de pino" },
+      { name: "Acabado", value: "Metal negro mate, madera natural" },
+      { name: "Peso", value: "18 kg" },
+      { name: "Niveles", value: "5 estantes ajustables" },
+    ],
+    materials: [
+      { part: "Estructura", material: "Metal negro mate" },
+      { part: "Estantes", material: "Madera de pino tratada" },
+      { part: "Herrajes", material: "Acero galvanizado" },
+    ],
+    colors: ["#2C2C2C", "#F5F5DC"],
+    reviews: [
+      {
+        author: "Patricia L.",
+        rating: 5,
+        date: "08/05/2023",
+        comment:
+          "Perfecta para mi oficina en casa. Muy estable y el diseño es precioso.",
+      },
+      {
+        author: "Miguel A.",
+        rating: 4,
+        date: "22/04/2023",
+        comment:
+          "Buena calidad y fácil de armar. Los estantes son muy resistentes.",
+      },
+    ],
+    featured: false,
+  },
+  {
+    id: "lampara-pie-articulada",
+    name: "Lámpara de Pie Articulada",
+    description: "Lámpara de pie con brazo articulado y luz LED regulable.",
+    fullDescription:
+      "Esta lámpara de pie articulada combina funcionalidad y estilo moderno. Con tecnología LED de última generación y brazo totalmente articulado, permite dirigir la luz exactamente donde la necesites. Su base pesada garantiza estabilidad, mientras que el regulador táctil ofrece control total sobre la intensidad lumínica.",
+    price: 129.99,
+    images: [
+      "/placeholder.svg?height=600&width=600",
+      "/placeholder.svg?height=600&width=600",
+      "/placeholder.svg?height=600&width=600",
+      "/placeholder.svg?height=600&width=600",
+    ],
+    videos: ["/instagram/consola_Marsella/videos/marsella18.mp4"],
+
+    category: "Iluminación",
+    stock: 20,
+    rating: 4.4,
+    reviewCount: 31,
+    dimensions: {
+      width: 30,
+      height: 150,
+      depth: 30,
+    },
+    specifications: [
+      { name: "Tipo de luz", value: "LED 12W" },
+      { name: "Regulable", value: "Sí, control táctil" },
+      { name: "Material", value: "Metal y plástico ABS" },
+      { name: "Cable", value: "2 metros con interruptor" },
+    ],
+    materials: [
+      { part: "Base", material: "Metal fundido" },
+      { part: "Brazo", material: "Aluminio anodizado" },
+      { part: "Pantalla", material: "Plástico ABS" },
+    ],
+    colors: ["#000000", "#FFFFFF", "#C0C0C0"],
+    reviews: [
+      {
+        author: "Carmen R.",
+        rating: 5,
+        date: "15/05/2023",
+        comment:
+          "Excelente lámpara para leer. La luz es muy cálida y el brazo se mueve perfectamente.",
+      },
+      {
+        author: "David M.",
+        rating: 4,
+        date: "03/05/2023",
+        comment:
+          "Muy práctica y moderna. El regulador táctil funciona muy bien.",
+      },
+    ],
+    featured: true,
+  },
+  {
+    id: "jarron-ceramica-decorativo",
+    name: "Jarrón Decorativo Cerámica",
+    description: "Jarrón decorativo de cerámica artesanal con acabado mate.",
+    fullDescription:
+      "Este hermoso jarrón decorativo está elaborado en cerámica artesanal con un elegante acabado mate. Su forma orgánica y textura única lo convierten en una pieza de arte que complementa cualquier espacio. Perfecto para flores frescas o como elemento decorativo independiente.",
+    price: 59.99,
+    images: [
+      "/placeholder.svg?height=600&width=600",
+      "/placeholder.svg?height=600&width=600",
+      "/placeholder.svg?height=600&width=600",
+      "/placeholder.svg?height=600&width=600",
+    ],
+    videos: ["/instagram/consola_Marsella/videos/marsella18.mp4"],
+
+    category: "Decoración",
+    stock: 25,
+    rating: 4.3,
+    reviewCount: 14,
+    dimensions: {
+      width: 20,
+      height: 35,
+      depth: 20,
+    },
+    specifications: [
+      { name: "Material", value: "Cerámica artesanal" },
+      { name: "Acabado", value: "Mate texturizado" },
+      { name: "Peso", value: "1.2 kg" },
+      { name: "Uso", value: "Interior" },
+    ],
+    materials: [
+      { part: "Cuerpo", material: "Cerámica de alta temperatura" },
+      { part: "Acabado", material: "Esmalte mate" },
+    ],
+    colors: ["#F5F5DC", "#8B4513", "#2F4F4F"],
+    reviews: [
+      {
+        author: "Isabel F.",
+        rating: 5,
+        date: "12/05/2023",
+        comment:
+          "Precioso jarrón, la textura es muy bonita y el tamaño perfecto para mi mesa.",
+      },
+      {
+        author: "Antonio G.",
+        rating: 4,
+        date: "28/04/2023",
+        comment: "Buena calidad y muy decorativo. Llegó muy bien empaquetado.",
+      },
+    ],
+    featured: false,
   },
 ];
 

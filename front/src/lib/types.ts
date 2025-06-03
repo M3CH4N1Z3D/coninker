@@ -5,6 +5,7 @@ export interface Product {
   fullDescription: string;
   price: number;
   images: string[];
+  videos: string[];
   category: string;
   stock: number;
   rating: number;
@@ -30,4 +31,5 @@ export interface Product {
     date: string;
     comment: string;
   }>;
+  featured: boolean;
 }

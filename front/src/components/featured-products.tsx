@@ -7,15 +7,23 @@ import { getAllProducts } from "@/lib/products";
 export function FeaturedProducts() {
   const products = getAllProducts();
 
+  // 🔹 Filtrar solo productos destacados
+  const featuredProducts = products.filter((product) => product.featured);
+
+  // 🔹 Obtener 3 productos aleatorios
+  const randomFeatured = featuredProducts
+    .sort(() => Math.random() - 0.5) // Mezcla los productos aleatoriamente
+    .slice(0, 3); // Selecciona solo los primeros 3
+
   return (
-    <section id="decoracion" className="py-20 bg-gray-50">
+    <section id="decoracion" className="py-20 bg-[#FBDB93]">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">
           Productos Destacados
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => (
+          {randomFeatured.map((product) => (
             <Card
               key={product.id}
               className="group overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300"
