@@ -136,15 +136,6 @@ export function CartPage() {
                 Continuar comprando
               </Button>
             </Link>
-            <div className="flex items-center">
-              <Input
-                placeholder="Código de descuento"
-                className="w-48 mr-2"
-                value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value)}
-              />
-              <Button variant="outline">Aplicar</Button>
-            </div>
           </div>
         </div>
 
