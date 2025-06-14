@@ -1,3 +1,5 @@
+import AdminDashboard from "@/components/AdminDashboard";
+import ListProducts from "@/components/ListProducts";
 import LoginForm from "@/components/LoginForm";
 import { AuthProvider } from "@/context/AuthContext";
 import type { Metadata } from "next";
@@ -7,11 +9,11 @@ export const metadata: Metadata = {
   description: "Desde aqui vas a configurar tu sitio",
 };
 
-export default function LoginPage() {
+export default function AdminDashboardPage() {
   return (
     <div>
       <AuthProvider>
-        <LoginForm />
+        <ListProducts />
       </AuthProvider>
     </div>
   );

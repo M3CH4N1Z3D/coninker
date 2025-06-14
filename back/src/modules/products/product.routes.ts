@@ -4,11 +4,11 @@ import { protect } from "../../middleware/protectRoute";
 
 const router = Router();
 
-router.post(
-  "/",
-  /*protect,*/ (req, res, next) => {
-    productController.createProduct(req, res, next);
-  }
-);
+router.post("/", protect, (req, res, next) => {
+  productController.createProduct(req, res, next);
+});
+router.get("/", protect, (req, res, next) => {
+  productController.getAllProducts(req, res, next);
+});
 
 export default router;

@@ -16,7 +16,7 @@ export class ProductController {
         !productData.name ||
         !productData.description ||
         !productData.price ||
-        !productData.images ||
+        // !productData.images ||
         !productData.stock ||
         !productData.length ||
         !productData.height ||
@@ -40,6 +40,31 @@ export class ProductController {
     } catch (error: any) {
       console.error("Error creating product:", error);
       next(error);
+    }
+  }
+
+  async getAllProducts(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const products = await productService.getAllProducts();
+
+      if (products.length === 0) {
+        res
+          .status(200)
+          .json({ message: "No hay productos disponibles", products: [] });
+        return;
+      }
+
+      res
+        .status(200)
+        .json({ message: "Productos obtenidos correctamente", products });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error interno al recuperar productos." });
     }
   }
 }

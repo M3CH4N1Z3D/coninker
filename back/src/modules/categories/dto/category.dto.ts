@@ -1,6 +1,5 @@
 // Data Transfer Object (DTO) for creating a new Customer
 
-export interface CreateCustomerDto {
+export interface CreateCategoryDto {
   name: string;
-  products: string[];
 }

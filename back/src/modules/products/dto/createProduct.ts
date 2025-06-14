@@ -12,7 +12,7 @@ export interface CreateProductDto {
   description: string;
   fullDescription?: string;
   price: number;
-  images: string[];
+  // images: string[];
   videos?: string[];
   stock: number;
   rating?: number;

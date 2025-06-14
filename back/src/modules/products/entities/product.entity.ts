@@ -32,7 +32,7 @@ export class Product {
     type: "varchar",
     length: 1024,
     nullable: true,
-    name: "full-description",
+    name: "full_description",
   })
   fullDescription!: string | null;
 
@@ -125,6 +125,6 @@ export class Product {
   updatedAt!: Date;
 
   @ManyToMany(() => Category, (category) => category.products)
-  @JoinTable()
+  @JoinTable({ name: "products_categories" })
   categories!: Category[];
 }

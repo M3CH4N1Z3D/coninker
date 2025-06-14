@@ -33,6 +33,14 @@ export class ProductService {
       throw new Error("Failed to save product.");
     }
   }
+
+  async getAllProducts(): Promise<Product[]> {
+    try {
+      return await this.productRepository.find({ relations: ["categories"] }); // ✅ Se mantiene la relación con categorías
+    } catch (error) {
+      throw new Error("Error al recuperar productos.");
+    }
+  }
 }
 
 export const productService = new ProductService();

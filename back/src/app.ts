@@ -8,6 +8,7 @@ import cors from "cors"; // Import CORS middleware
 import adminRoutes from "../src/modules/admins/admin.routes";
 import productRoutes from "./modules/products/product.routes";
 import uploadRoutes from "./utils/cloudinary/cloudinary.routes";
+import categoryRoutes from "./modules/categories/category.routes";
 
 // Import database initializer (optional here, depends on strategy)
 // import { initializeDatabase } from "./database/data-source";
@@ -58,6 +59,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/admins", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api", uploadRoutes);
+app.use("/api/categories", categoryRoutes);
 
 // --- Global Error Handler ---
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
