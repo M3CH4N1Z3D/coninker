@@ -10,8 +10,10 @@ const products: Product[] = [
     fullDescription:
       "Atractiva como ella sola, te dará un salto de modernidad, diseño y estilo.",
     price: 299.99,
-    images: ["/instagram/consola-Marsella/consola-Marsella.webp"],
-    videos: ["/instagram/consola-Marsella/videos/marsella18.mp4"],
+    images: [
+      "https://res.cloudinary.com/ddwvgovkx/image/upload/v1749861021/products/dwmnv7fx41jfhzeupqcb.webp",
+    ],
+    videos: [],
     category: "Mesas",
     stock: 15,
     rating: 4.5,
