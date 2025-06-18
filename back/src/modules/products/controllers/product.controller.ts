@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { productService } from "../services/product.service";
 import { CreateProductDto } from "../dto/createProduct";
+import cloudinary from "../../../utils/cloudinary/cloudinary";
 
 export class ProductController {
   async createProduct(
@@ -121,6 +122,74 @@ export class ProductController {
         .json({ message: "Error interno al actualizar el producto." });
     }
   }
+
+  deleteProductImage = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    function getPublicId(imageUrl: string): string {
+      const parts = imageUrl.split("/");
+      const uploadIndex = parts.indexOf("upload");
+      if (uploadIndex === -1) {
+        throw new Error("Formato de URL de Cloudinary no reconocido.");
+      }
+      const publicIdWithExtension = parts.slice(uploadIndex + 2).join("/");
+      const dotIndex = publicIdWithExtension.lastIndexOf(".");
+      const publicId =
+        dotIndex !== -1
+          ? publicIdWithExtension.substring(0, dotIndex)
+          : publicIdWithExtension;
+      return publicId;
+    }
+
+    try {
+      const { id } = req.params;
+      const { imageUrl } = req.body;
+
+      if (!imageUrl) {
+        res
+          .status(400)
+          .json({ message: "No se proporcionó la URL de la imagen." });
+        return;
+      }
+
+      // Obtenemos el public_id de Cloudinary
+      const publicId = getPublicId(imageUrl);
+
+      // Llamamos a Cloudinary para eliminar la imagen
+      const result = await cloudinary.uploader.destroy(publicId, {
+        resource_type: "image",
+      });
+
+      if (result.result !== "ok") {
+        throw new Error(
+          "Error al eliminar la imagen en Cloudinary: " + result.result
+        );
+      }
+
+      // Actualizamos el producto (se asume que updateProduct actualiza y retorna el producto actualizado)
+      const updatedProduct = await productService.deleteProductImage(
+        id,
+        imageUrl
+      );
+
+      if (!updatedProduct) {
+        res.status(500).json({ message: "No se pudo actualizar el producto" });
+        return;
+      }
+
+      res.status(200).json({
+        message: "Imagen eliminada correctamente",
+        product: updatedProduct,
+      });
+    } catch (error: any) {
+      console.error("Error al eliminar imagen:", error);
+      res.status(500).json({
+        message: error.message || "Error interno al eliminar la imagen.",
+      });
+    }
+  };
 }
 
 export const productController = new ProductController();

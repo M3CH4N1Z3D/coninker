@@ -14,5 +14,6 @@ router.get("/:id", productController.getProductById);
 router.put("/:id", protect, (req, res, next) => {
   productController.updateProduct(req, res, next);
 });
+router.delete("/:id/images", protect, productController.deleteProductImage);
 
 export default router;

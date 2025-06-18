@@ -4,20 +4,23 @@ import cloudinary from "../utils/cloudinary/cloudinary";
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: async (
-    req: { body: { productName: string; colorHex: string } },
-    file: any
-  ) => {
-    const { productName, colorHex } = req.body;
+  params: async (req: any, file: any) => {
+    const productName = req.body?.productName;
+    const colorHex = req.body?.colorHex;
+    console.log("📦 Campos recibidos:", { productName, colorHex });
+    console.log("🗂️ File data:", file);
 
     if (!productName || !colorHex) {
       throw new Error("Product name and color hex are required");
     }
 
-    const formattedProductName = productName.replace(/\s+/g, "-").toLowerCase();
+    const folder = `products/${productName}/${colorHex}`;
+    const resource_type = file.mimetype.startsWith("video") ? "video" : "image";
+
     return {
-      folder: () => `products/${formattedProductName}/${colorHex}`, // ✅ Ajuste en la tipificación del folder
-      format: async () => "webp",
+      folder,
+      format: resource_type === "image" ? "webp" : undefined,
+      resource_type,
       transformation: [{ width: 800, height: 800, crop: "limit" }],
     };
   },

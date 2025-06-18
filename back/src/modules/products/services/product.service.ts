@@ -81,17 +81,57 @@ export class ProductService {
     productData: Partial<Product>
   ): Promise<Product | null> {
     try {
-      // Elimina `categories` del objeto para que no se incluya en la actualización
-      const { categories, ...filteredProductData } = productData;
+      // Separamos las propiedades que no queremos actualizar directamente
+      const { categories, images, ...filteredProductData } = productData;
 
-      await this.productRepository.update(id, filteredProductData);
+      // Creamos un nuevo objeto con la información filtrada, y que incluya la propiedad 'images'
+      const updateData: Partial<Product> & { images?: string[] } = {
+        ...filteredProductData,
+      };
 
+      // Si se incluye "images" en el payload, filtramos duplicados
+      if (images && Array.isArray(images)) {
+        updateData.images = Array.from(new Set(images));
+      }
+
+      // Actualizamos el producto con los datos filtrados (updateData)
+      await this.productRepository.update(id, updateData);
+
+      // Retornamos el producto actualizado (incluyendo relaciones si es necesario)
       return await this.productRepository.findOne({
         where: { id },
         relations: ["categories"],
       });
     } catch (error) {
       console.error("🚨 Error al actualizar el producto:", error);
+      return null;
+    }
+  }
+
+  async deleteProductImage(
+    id: string,
+    imageUrl: string
+  ): Promise<Product | null> {
+    try {
+      // Se busca el producto
+      const product = await this.productRepository.findOne({ where: { id } });
+      if (!product) {
+        console.error("Producto no encontrado");
+        return null;
+      }
+      // Se filtra el arreglo de imágenes removiendo la URL indicada
+      const newImages = (product.images || []).filter(
+        (img: string) => img !== imageUrl
+      );
+      // Se actualiza el producto con el nuevo arreglo de imágenes
+      await this.productRepository.update(id, { images: newImages });
+      // Se retorna el producto actualizado, incluyendo las relaciones necesarias
+      return await this.productRepository.findOne({
+        where: { id },
+        relations: ["categories"],
+      });
+    } catch (error) {
+      console.error("🚨 Error al eliminar la imagen del producto:", error);
       return null;
     }
   }
