@@ -19,6 +19,7 @@ export interface ProductFormProps {
 }
 
 export interface Product {
+  id?: string;
   name: string;
   price: number;
   categories: Category[];

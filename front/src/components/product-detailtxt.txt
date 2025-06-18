@@ -73,25 +73,13 @@ export default function ProductDetail() {
 
   // Acciones de edición
 
-  // const handleColorChange = (color: string) => {
-  //   setEditedProduct((prev) => ({
-  //     ...prev!,
-  //     colors: prev?.colors.includes(color)
-  //       ? prev.colors.filter((c) => c !== color)
-  //       : [...prev?.colors, color],
-  //   }));
-  // };
-
   const handleColorChange = (color: string) => {
-    setEditedProduct((prev) => {
-      const colors = prev?.colors || []; // Asegúrate de que colors sea un arreglo
-      return {
-        ...prev!,
-        colors: colors.includes(color)
-          ? colors.filter((c) => c !== color)
-          : [...colors, color],
-      };
-    });
+    setEditedProduct((prev) => ({
+      ...prev!,
+      colors: prev?.colors.includes(color)
+        ? prev.colors.filter((c) => c !== color)
+        : [...prev.colors, color],
+    }));
   };
 
   const handleEdit = () => {

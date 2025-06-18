@@ -14,43 +14,44 @@ export default function ListProducts() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchProducts = async () => {
+    const authToken = localStorage.getItem("authToken");
+
+    if (!authToken) {
+      setError("Acceso denegado. No se encontró el token de autenticación.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3001/api/products", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (!response.ok) throw new Error("Error al obtener los productos.");
+
+      const data = await response.json();
+      setProducts(data.products || []);
+    } catch (err: any) {
+      setError(err.message);
+      setProducts([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchProducts = async () => {
-      const authToken = localStorage.getItem("authToken");
-
-      if (!authToken) {
-        setError("Acceso denegado. No se encontró el token de autenticación.");
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetch("http://localhost:3001/api/products", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
-
-        if (!response.ok) throw new Error("Error al obtener los productos.");
-
-        const data = await response.json();
-        setProducts(data.products || []);
-      } catch (err: any) {
-        setError(err.message);
-        setProducts([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProducts();
+    fetchProducts(); // 🔄 Obtiene los productos al montar el componente
   }, []);
 
-  const handleCreateProduct = (newProduct: Product) => {
-    setProducts((prevProducts) => [newProduct, ...prevProducts]); // Agregar nuevo producto a la lista
-    setIsModalOpen(false); // Cerrar el modal después de guardar
+  const handleCreateProduct = async (newProduct: Product) => {
+    setProducts((prevProducts) => [newProduct, ...prevProducts]); // 🔥 Agrega el nuevo producto a la lista temporalmente
+    await fetchProducts(); // 🔄 Recarga la lista desde el backend SOLO una vez
+    setIsModalOpen(false); // ✅ Cierra el modal
   };
 
   return (
@@ -97,12 +98,12 @@ export default function ListProducts() {
           <tbody>
             {products
               .filter((product) =>
-                product.name.toLowerCase().includes(search.toLowerCase())
+                product.name?.toLowerCase().includes(search.toLowerCase())
               )
               .map((product) => (
                 <tr key={product.name} className="hover:bg-gray-50">
                   <td className="border p-3">
-                    <Link href={`/admin/productos/${product.name}`}>
+                    <Link href={`/admin/productos/${product.id}`}>
                       <span className="text-indigo-600 hover:underline cursor-pointer">
                         {product.name}
                       </span>

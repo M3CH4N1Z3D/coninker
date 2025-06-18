@@ -33,7 +33,7 @@ export function FeaturedProducts() {
                   <div className="relative h-64 w-full">
                     <Image
                       src={product.images[0] || "/placeholder.svg"}
-                      alt={product.name}
+                      alt={product.name || ""}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
@@ -43,7 +43,7 @@ export function FeaturedProducts() {
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <p className="text-sm text-amber-600 font-medium">
-                        {product.category}
+                        {product?.categories.map((cat) => cat.name).join(", ")}
                       </p>
                       <Link href={`/producto/${product.id}`}>
                         <h3 className="text-lg font-semibold text-gray-900 hover:text-amber-600 transition-colors">

@@ -9,7 +9,6 @@ import {
   ManyToMany,
   JoinTable, // Import OneToMany
 } from "typeorm";
-import { Material, Specification } from "../dto/createProduct";
 
 @Entity({ name: "products" })
 export class Product {
@@ -105,12 +104,6 @@ export class Product {
     name: "weight",
   })
   weight!: number;
-
-  @Column({ type: "jsonb", nullable: true, name: "specifications" })
-  specifications!: Specification[];
-
-  @Column({ type: "jsonb", nullable: true, name: "materials" })
-  materials!: Material[];
 
   @Column({ type: "varchar", array: true, nullable: false, name: "colors" })
   colors!: string[];

@@ -10,5 +10,9 @@ router.post("/", protect, (req, res, next) => {
 router.get("/", protect, (req, res, next) => {
   productController.getAllProducts(req, res, next);
 });
+router.get("/:id", productController.getProductById);
+router.put("/:id", protect, (req, res, next) => {
+  productController.updateProduct(req, res, next);
+});
 
 export default router;
