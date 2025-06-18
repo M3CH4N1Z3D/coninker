@@ -14,7 +14,13 @@ export class Category {
   id!: string;
 
   @Column({ type: "varchar", length: 255 })
-  name!: string;
+  title!: string;
+
+  @Column({ type: "varchar", length: 1024, nullable: true })
+  image!: string;
+
+  @Column({ type: "varchar", length: 5000, nullable: true })
+  description!: string;
 
   @ManyToMany(() => Product, (product) => product.categories)
   products!: Product[];

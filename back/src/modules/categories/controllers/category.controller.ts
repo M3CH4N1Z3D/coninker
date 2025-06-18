@@ -12,7 +12,7 @@ export class CategoryController {
       const categoryData: CreateCategoryDto = req.body;
 
       // Basic validation (more comprehensive validation should be done using a library like class-validator)
-      if (!categoryData.name) {
+      if (!categoryData.title) {
         res.status(400).json({ message: "Missing required fieldsssss" });
         return;
       }
@@ -50,6 +50,34 @@ export class CategoryController {
       res
         .status(500)
         .json({ message: "Error interno al recuperar categorias." });
+    }
+  }
+  async getProductsByCategoryTitle(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    const { title } = req.params;
+
+    try {
+      const category = await categoryService.getProductsByCategoryTitle(title);
+
+      if (!category) {
+        res
+          .status(404)
+          .json({ message: `No se encontró la categoría "${title}".` });
+        return;
+      }
+
+      res.status(200).json({
+        message: "Categoría y productos obtenidos correctamente",
+        category,
+        products: category.products,
+      });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error interno al obtener la categoría." });
     }
   }
 }

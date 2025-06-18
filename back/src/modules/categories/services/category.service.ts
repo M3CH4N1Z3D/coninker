@@ -28,6 +28,19 @@ export class CategoryService {
       throw new Error("Error al recuperar categorias.");
     }
   }
+  async getProductsByCategoryTitle(title: string): Promise<Category | null> {
+    try {
+      return await this.categoryRepository
+        .createQueryBuilder("category")
+        .leftJoinAndSelect("category.products", "product")
+        .where("unaccent(lower(category.title)) = unaccent(lower(:title))", {
+          title,
+        })
+        .getOne();
+    } catch (error) {
+      throw new Error("Error al obtener la categoría por título.");
+    }
+  }
 }
 
 export const categoryService = new CategoryService();

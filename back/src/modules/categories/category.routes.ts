@@ -9,5 +9,8 @@ const router = Router();
 router.get("/", (req, res, next) =>
   categoryController.getAllCategories(req, res, next)
 );
+router.get("/:title", (req, res, next) =>
+  categoryController.getProductsByCategoryTitle(req, res, next)
+);
 
 export default router;

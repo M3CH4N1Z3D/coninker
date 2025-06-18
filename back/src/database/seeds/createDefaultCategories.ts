@@ -6,24 +6,48 @@ export const createDefaultCategories = async () => {
     const categoryRepository = AppDataSource.getRepository(Category);
 
     const defaultCategories = [
-      { name: "Mesas" },
-      { name: "Sillas" },
-      { name: "Sofás" },
-      { name: "Estanterías" },
-      { name: "Iluminación" },
-      { name: "Decoración" },
+      {
+        title: "Mesas",
+        image: "",
+        description: "Mesas de comedor, centro y auxiliares para cada espacio",
+      },
+      {
+        title: "Sillas",
+        image: "",
+        description: "Sillas ergonómicas y de diseño para tu hogar u oficina",
+      },
+      {
+        title: "Sofás",
+        image: "",
+        description: "Confort y estilo para tu sala de estar",
+      },
+      {
+        title: "Estanterías",
+        image: "",
+        description: "Soluciones de almacenamiento funcionales y decorativas",
+      },
+      {
+        title: "Iluminación",
+        image: "",
+        description: "Lámparas y accesorios para crear la atmósfera perfecta",
+      },
+      {
+        title: "Decoración",
+        image: "",
+        description: "Complementos que dan vida y personalidad a tu hogar",
+      },
     ];
 
     for (const category of defaultCategories) {
       const existingCategory = await categoryRepository.findOne({
-        where: { name: category.name },
+        where: { title: category.title },
       });
       if (!existingCategory) {
         await categoryRepository.save(category);
-        console.log(`✅ Categoría creada: ${category.name}`);
+        console.log(`✅ Categoría creada: ${category.title}`);
       } else {
         console.log(
-          `🔍 Categoría "${category.name}" ya existe, omitiendo creación.`
+          `🔍 Categoría "${category.title}" ya existe, omitiendo creación.`
         );
       }
     }
