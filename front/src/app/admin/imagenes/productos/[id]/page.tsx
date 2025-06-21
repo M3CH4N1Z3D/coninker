@@ -1,4 +1,5 @@
-import ListProducts from "@/components/ListProducts";
+import ProductDetail from "@/components/product-detail";
+import ConfigImageProduct from "@/components/configImageProduct";
 import { AuthProvider } from "@/context/AuthContext";
 import type { Metadata } from "next";
 
@@ -7,11 +8,11 @@ export const metadata: Metadata = {
   description: "Desde aqui vas a configurar tu sitio",
 };
 
-export default function AdminDashboardPage() {
+export default function AdminImageProductPage() {
   return (
     <div>
       <AuthProvider>
-        <ListProducts />
+        <ConfigImageProduct />
       </AuthProvider>
     </div>
   );

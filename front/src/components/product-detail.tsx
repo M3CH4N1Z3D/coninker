@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { useCart } from "@/context/cart-context";
-import type { Product } from "@/lib/types";
 import { Minus, Plus, Share2, Truck, RotateCcw, Check } from "lucide-react";
+import { Product } from "@/interfaces/types";
 
 export default function ProductDetail() {
   // Llamadas a Hooks de navegación (no deben depender de condiciones)
@@ -72,15 +72,6 @@ export default function ProductDetail() {
   if (!product) return <p>Producto no encontrado</p>;
 
   // Acciones de edición
-
-  // const handleColorChange = (color: string) => {
-  //   setEditedProduct((prev) => ({
-  //     ...prev!,
-  //     colors: prev?.colors.includes(color)
-  //       ? prev.colors.filter((c) => c !== color)
-  //       : [...prev?.colors, color],
-  //   }));
-  // };
 
   const handleColorChange = (color: string) => {
     setEditedProduct((prev) => {
@@ -173,20 +164,30 @@ export default function ProductDetail() {
 
   const textColor = getContrastColor(selectedColor);
 
+  const handleBack = () => {
+    router.back();
+  };
+
   return (
     <section
       className="py-12 inset-0 bg-black/20 transition-colors duration-1000"
       style={{ backgroundColor: selectedColor, color: textColor }}
     >
       <div className="container mx-auto px-4">
+        <span
+          className="text-yellow-600 hover:underline cursor-pointer"
+          onClick={handleBack}
+        >
+          Volver
+        </span>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Images */}
           <div className="space-y-4 relative">
             {/* Imagen o Video principal */}
             <div className="relative aspect-square overflow-hidden bg-gray-100">
-              {selectedImage < colorImages.length ? (
+              {selectedImage < product?.images?.length ? (
                 <Image
-                  src={colorImages[selectedImage]}
+                  src={product.images[selectedImage]}
                   alt={product.name || ""}
                   fill
                   className="object-cover transition-opacity duration-500 ease-in-out opacity-100"
@@ -204,7 +205,7 @@ export default function ProductDetail() {
 
             {/* Miniaturas sobre la imagen grande */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-              {colorImages.map((image, index) => (
+              {product?.images?.map((image, index) => (
                 <button
                   key={index}
                   className={`relative w-16 h-16 overflow-hidden bg-gray-100 rounded-lg ${
@@ -220,11 +221,13 @@ export default function ProductDetail() {
                 <button
                   key={`video-${index}`}
                   className={`relative w-16 h-16 overflow-hidden bg-gray-100 rounded-lg ${
-                    selectedImage === index + colorImages.length
+                    selectedImage === index + product.images.length
                       ? "ring-2 ring-amber-500"
                       : ""
                   }`}
-                  onClick={() => setSelectedImage(index + colorImages.length)}
+                  onClick={() =>
+                    setSelectedImage(index + product.images.length)
+                  }
                 >
                   <video className="object-cover w-full h-full">
                     <source src={productVideo} type="video/mp4" />
@@ -238,7 +241,7 @@ export default function ProductDetail() {
           <div className="space-y-6">
             <div>
               <p className="text-amber-600 font-medium">
-                {product?.categories.map((cat) => cat.name).join(", ")}
+                {product?.categories.map((cat) => cat.title).join(", ")}
               </p>
               <h1 className="text-3xl font-bold">
                 {isEditing ? (

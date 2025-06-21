@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Modal from "./ui/Modal";
 import { Category } from "@/interfaces/types";
@@ -13,6 +14,8 @@ export default function ListProducts() {
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const pathName = usePathname();
 
   const fetchProducts = async () => {
     const authToken = localStorage.getItem("authToken");
@@ -54,8 +57,21 @@ export default function ListProducts() {
     setIsModalOpen(false); // ✅ Cierra el modal
   };
 
+  const handleNavigate = (product: string) => {
+    router.push(`${pathName}/${product}`);
+  };
+  const handleBack = () => {
+    window.history.back();
+  };
+
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
+      <span
+        className="text-indigo-600 hover:underline cursor-pointer"
+        onClick={handleBack}
+      >
+        Volver
+      </span>
       <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">
         Gestión de Productos
       </h1>
@@ -100,18 +116,19 @@ export default function ListProducts() {
               .filter((product) =>
                 product.name?.toLowerCase().includes(search.toLowerCase())
               )
-              .map((product) => (
+              .map((product: Product) => (
                 <tr key={product.name} className="hover:bg-gray-50">
                   <td className="border p-3">
-                    <Link href={`/admin/productos/${product.id}`}>
-                      <span className="text-indigo-600 hover:underline cursor-pointer">
-                        {product.name}
-                      </span>
-                    </Link>
+                    <span
+                      onClick={() => handleNavigate(product.id)}
+                      className="text-indigo-600 hover:underline cursor-pointer"
+                    >
+                      {product.name}
+                    </span>
                   </td>
                   <td className="border p-3">${product.price.toFixed(2)}</td>
                   <td className="border p-3">
-                    {product.categories.map((cat) => cat.name).join(", ")}
+                    {product.categories.map((cat) => cat.title).join(", ")}
                   </td>
                 </tr>
               ))}

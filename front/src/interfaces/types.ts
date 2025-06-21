@@ -21,10 +21,27 @@ export interface ProductFormProps {
 export interface Product {
   id?: string;
   name: string;
+  description: string;
+  fullDescription: string;
   price: number;
+  images: string[];
+  videos: string[];
   categories: Category[];
+  stock: number;
+  rating: number;
+  reviewCount: number;
+  width: number;
+  height: number;
+  length: number;
+  weight: number;
+  colors?: string[];
+  selectedColor?: string;
+  featured: boolean;
 }
 
 export interface Category {
-  name: string;
+  id: string;
+  title: string;
+  image: string;
+  description: string;
 }

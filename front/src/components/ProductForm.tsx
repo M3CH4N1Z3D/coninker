@@ -1,26 +1,7 @@
 "use client";
 
+import { Category, ProductFormData } from "@/interfaces/types";
 import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
-
-interface Category {
-  id: string;
-  name: string;
-}
-
-interface ProductFormData {
-  name: string;
-  description: string;
-  fullDescription?: string;
-  price: number;
-  categories: Category[];
-  stock: number;
-  width: number;
-  height: number;
-  length: number;
-  weight: number;
-  colors: string[];
-  isFeatured: boolean;
-}
 
 export default function ProductForm({
   onCancel,
@@ -288,7 +269,7 @@ export default function ProductForm({
                     key={cat.id}
                     className="bg-indigo-600 text-white px-2 py-1 rounded-md flex items-center gap-2"
                   >
-                    {cat.name}
+                    {cat.title}
                     <button
                       type="button"
                       onClick={() => handleCategoryChange(cat)}
@@ -318,7 +299,7 @@ export default function ProductForm({
                     )}
                     onChange={() => handleCategoryChange(category)}
                   />
-                  <span>{category.name}</span>
+                  <span>{category.title}</span>
                 </label>
               ))}
             </div>

@@ -1,9 +1,42 @@
+"use client";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 import categories from "@/lib/categories";
+import { useEffect, useState } from "react";
+import { Category } from "@/interfaces/types";
 
 export function Categories() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/api/categories", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) throw new Error("Error al obtener las categorias.");
+
+      const data = await response.json();
+      setCategories(data.categories || []);
+    } catch (err: any) {
+      setError(err.message);
+      setCategories([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories(); // 🔄 Obtiene los productos al montar el componente
+  }, []);
+
   const normalizeCategory = (category: string) => {
     return category
       .toLowerCase()

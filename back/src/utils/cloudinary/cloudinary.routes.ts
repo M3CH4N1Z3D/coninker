@@ -8,4 +8,6 @@ router.post("/upload/image", upload.any(), uploadController);
 
 router.post("/upload/video", upload.single("file"), uploadController);
 
+// router.post("/upload/hero"), upload.any(), uploadController;
+
 export default router;
