@@ -7,7 +7,7 @@ const router = Router();
 router.post("/", protect, (req, res, next) => {
   productController.createProduct(req, res, next);
 });
-router.get("/", protect, (req, res, next) => {
+router.get("/", (req, res, next) => {
   productController.getAllProducts(req, res, next);
 });
 router.get("/:id", productController.getProductById);

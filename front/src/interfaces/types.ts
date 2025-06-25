@@ -36,7 +36,7 @@ export interface Product {
   weight: number;
   colors?: string[];
   selectedColor?: string;
-  featured: boolean;
+  isFeatured: boolean;
 }
 
 export interface Category {

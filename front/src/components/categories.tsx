@@ -46,13 +46,9 @@ export function Categories() {
   };
 
   return (
-    <section id="mobiliario" className="py-20 bg-[#FBDB93]">
+    <section id="mobiliario" className="py-20 bg-[var(--fondoPrincipal)]">
       <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">
-          Encuentra todo lo que necesitas para tu hogar
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {categories.map((category, index) => (
             <Link
               href={`/${normalizeCategory(category.title).toLowerCase()}`}
@@ -60,21 +56,19 @@ export function Categories() {
             >
               <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-md overflow-hidden">
                 <CardContent className="p-0">
-                  <div className="relative h-64 w-full">
+                  <div className="relative h-64 w-full group rounded overflow-hidden">
                     <Image
                       src={category.image || "/placeholder.svg"}
                       alt={category.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    <div className="absolute bottom-0 left-0 p-6 text-white">
-                      <h3 className="text-xl font-semibold mb-2">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <h3 className="text-2xl font-semibold tracking-wide text-[#828d20] bg-[#d8d9c7] px-6 py-3 rounded-md backdrop-blur-sm border border-white/30 shadow-md uppercase">
                         {category.title}
                       </h3>
-                      <p className="text-sm text-gray-200">
-                        {category.description}
-                      </p>
                     </div>
                   </div>
                 </CardContent>

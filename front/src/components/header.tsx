@@ -1,15 +1,17 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import { CartDropdown } from "@/components/cart-dropdown";
 import { SearchBar } from "@/components/search-bar";
-import categories from "@/lib/categories";
-import { useRef, useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import navOptions from "@/lib/categories";
 
 export function Header() {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<"left" | "right">("right");
+  const [showSearch, setShowSearch] = useState(false);
 
   const next = () => {
     setDirection("right");
@@ -23,17 +25,10 @@ export function Header() {
   const messages = ["Envíos a todo Colombia", "Producto 100% Colombiano"];
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     next();
-  //   }, 5000);
-  //   return () => clearInterval(interval);
-  // }, []);
-
   return (
     <header className="w-full">
       {/* Top bar with social links */}
-      <div className="bg-[#94804e] text-white py-2">
+      <div className="bg-[var(--fondoSecundario)] text-white py-2">
         <div className="container mx-auto px-4 flex justify-center items-center">
           <div className="flex items-center gap-4">
             <button
@@ -52,7 +47,7 @@ export function Header() {
                     : "translate-x-0 animate-slideInFromLeft"
                 }`}
               >
-                <span className="block text-sm font-medium">
+                <span className="block text-sm font-ligth">
                   {messages[index]}
                 </span>
               </div>
@@ -99,21 +94,37 @@ export function Header() {
       </div>
 
       {/* Main header */}
-      <div className="bg-[var(--backgroung)] shadow-sm">
+      <div className="bg-[var(--fondoPrincipal)] shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between gap-8">
-          <div className="flex items-center flex-1">
-            <SearchBar />
+          <div className="flex items-center mx-auto">
+            <Link href="/" className="flex items-center space-x-2">
+              <Image
+                src="/logo.webp"
+                alt="Logo"
+                width={200}
+                height={200}
+                priority
+              />
+            </Link>
           </div>
+          <div className="flex flex-row">
+            <div className="relative">
+              <Button
+                onClick={() => setShowSearch((prev) => !prev)}
+                className="text-[var(--colorLetra)] hover:text-[var(--hoverColor)] transition"
+              >
+                <Search size={22} />
+              </Button>
+              {showSearch && (
+                <div className="absolute right-0 mt-2 w-64 z-50">
+                  <SearchBar />
+                </div>
+              )}
+            </div>
 
-          <Link
-            href="/"
-            className="text-2xl font-bold text-gray-900 flex-shrink-0"
-          >
-            cón<span className="text-[#8A2D3B]">inker</span>
-          </Link>
-
-          <div className="flex items-center space-x-4 flex-shrink-0">
-            <CartDropdown />
+            <div className="flex items-center space-x-4 flex-shrink-0 text-[var(--colorLetra)] hover:text-[var(--hoverColor)]">
+              <CartDropdown />
+            </div>
           </div>
         </div>
 
@@ -121,27 +132,19 @@ export function Header() {
         <nav className="border-t">
           <div className="container mx-auto px-4">
             <div className="flex justify-center space-x-8 py-4">
-              {categories.map((category) => (
+              {navOptions.map((option) => (
                 <Link
-                  key={category.title}
-                  href={`/${category.title
+                  key={option.title}
+                  href={`/${option.title
                     .toLowerCase()
                     .normalize("NFD")
-                    .replace(/[\u0300-\u036f]/g, "")}`}
-                  className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .replace(/\s+/g, "-")}`}
+                  className="text-[var(--colorLetra)] hover:text-[var(--hoverColor)] transition-colors font-medium"
                 >
-                  {category.title}
+                  {option.title}
                 </Link>
               ))}
-              <span className="text-gray-700 font-medium">|</span>
-
-              {/* Mantener "Contacto" en la barra */}
-              <Link
-                href={`/#contacto`}
-                className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
-              >
-                Contacto
-              </Link>
             </div>
           </div>
         </nav>

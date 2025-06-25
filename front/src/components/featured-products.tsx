@@ -1,29 +1,78 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { getAllProducts } from "@/lib/products";
+import { Product } from "@/interfaces/types";
+import { Puzzle, Hand, MessageCircle, MapPin } from "lucide-react";
+import { GiColombia } from "react-icons/gi";
 
 export function FeaturedProducts() {
-  const products = getAllProducts();
+  const [featured, setFeatured] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+  const features = [
+    {
+      icon: <Puzzle size={32} />,
+      title: "Colaboración Creativa",
+      description:
+        "Aliados en el desarrollo de ideas junto a arquitectos, diseñadores de interiores y proyectos de hospitalidad.",
+    },
+    {
+      icon: <Hand size={32} />,
+      title: "Hecho a Mano",
+      description:
+        "Combinamos artesanía tradicional y diseño contemporáneo para ofrecer piezas únicas y auténticas.",
+    },
+    {
+      icon: <MessageCircle size={32} />,
+      title: "Atención al Cliente",
+      description:
+        "Nos comprometemos a brindar una experiencia que supera expectativas, con soluciones reales.",
+    },
+    {
+      icon: <GiColombia size={32} />,
+      title: "Marca Colombiana",
+      description:
+        "Todo lo que hacemos está fabricado en Colombia, impulsando nuestra industria con orgullo.",
+    },
+  ];
 
-  // 🔹 Filtrar solo productos destacados
-  const featuredProducts = products.filter((product) => product.featured);
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const res = await fetch(`${apiUrl}/api/products`);
+        if (!res.ok) throw new Error("Error al obtener productos");
+        const data = await res.json();
+        const featuredProducts = data.products
+          .filter((p: Product) => p.isFeatured)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 3);
+        setFeatured(featuredProducts);
+      } catch (err) {
+        console.error("Error cargando productos destacados:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  // 🔹 Obtener 3 productos aleatorios
-  const randomFeatured = featuredProducts
-    .sort(() => Math.random() - 0.5) // Mezcla los productos aleatoriamente
-    .slice(0, 3); // Selecciona solo los primeros 3
+    fetchFeatured();
+  }, [apiUrl]);
+
+  if (isLoading || featured.length === 0) return null;
 
   return (
-    <section id="decoracion" className="py-20 bg-[#FBDB93]">
+    <section id="decoracion" className="py-20 bg-[var(--fondoPrincipal)]">
       <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">
-          Productos Destacados
+        <h2 className="text-4xl font-bold text-center text-[var(--colorLetra)] mb-16">
+          Asi complementamos los espacios
+          <br /> con nuestras piezas...
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {randomFeatured.map((product) => (
+          {featured.map((product) => (
             <Card
               key={product.id}
               className="group overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300"
@@ -32,37 +81,51 @@ export function FeaturedProducts() {
                 <Link href={`/producto/${product.id}`}>
                   <div className="relative h-64 w-full">
                     <Image
-                      src={product.images[0] || "/placeholder.svg"}
+                      src={product.images?.[0] || "/placeholder.svg"}
                       alt={product.name || ""}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
                 </Link>
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-2">
+                <div className="p-6 bg-[#d4d9d7]">
+                  <div className="flex flex-col justify-center items-center mb-2">
                     <div>
-                      <p className="text-sm text-amber-600 font-medium">
-                        {product?.categories.map((cat) => cat.name).join(", ")}
-                      </p>
                       <Link href={`/producto/${product.id}`}>
-                        <h3 className="text-lg font-semibold text-gray-900 hover:text-amber-600 transition-colors">
+                        <h3 className="text-lg font-bold text-[var(--colorLetra)] hover:text-amber-600 transition-colors">
                           {product.name}
                         </h3>
                       </Link>
                     </div>
-                    <p className="text-lg font-bold text-gray-900">
-                      ${product.price.toFixed(2)}
-                    </p>
+                    <div>
+                      <p className="text-lg font-light text-[var(--colorLetra)]">
+                        ${product.price.toFixed(2)}
+                      </p>
+                    </div>
                   </div>
                   <Link href={`/producto/${product.id}`}>
-                    <Button className="w-full mt-4 bg-amber-600 hover:bg-amber-700 text-white">
-                      Ver detalles
+                    <Button className="border-1 border-[var(--colorLetra)] w-full mt-4 bg-[#d4d9d7] hover:bg-[var(--hoverColor)] text-[var(--colorLetra)] hover:text-[#d4d9d7]">
+                      VER PRODUCTO
                     </Button>
                   </Link>
                 </div>
               </CardContent>
             </Card>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 mt-10 sm:grid-cols-2 md:grid-cols-4 gap-10 text-center bg-[#d4d9d7] p-10 shadow-md">
+          {features.map((feature, index) => (
+            <div key={index} className="flex flex-col items-center">
+              <div className="mb-4 text-[var(--colorLetra)]">
+                {feature.icon}
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                {feature.title}
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                {feature.description}
+              </p>
+            </div>
           ))}
         </div>
       </div>

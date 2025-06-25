@@ -11,9 +11,9 @@ export default function Home() {
     <main className="min-h-screen bg-white">
       <Hero />
       <Categories />
-      {/* <FeaturedProducts /> */}
-      <About />
-      <Contact />
+      <FeaturedProducts />
+      {/* <About /> */}
+      {/* <Contact /> */}
       <PromoModal />
     </main>
   );
