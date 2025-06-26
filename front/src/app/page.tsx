@@ -14,7 +14,7 @@ export default function Home() {
       <FeaturedProducts />
       {/* <About /> */}
       {/* <Contact /> */}
-      <PromoModal />
+      {/* <PromoModal /> */}
     </main>
   );
 }

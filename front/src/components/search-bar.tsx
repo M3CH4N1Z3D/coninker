@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
 import { Product } from "@/interfaces/types";
-import { Category } from "@/interfaces/types";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function SearchBar() {
   const [query, setQuery] = useState("");
@@ -126,9 +126,9 @@ export function SearchBar() {
   };
 
   return (
-    <div ref={searchRef} className="relative w-full max-w-md">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+    <div ref={searchRef} className="absolute w-screen">
+      <div className="w-screen relative px-4 mx-auto">
+        <Search className="absolute left-10 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
         <Input
           ref={inputRef}
           type="text"
@@ -151,56 +151,65 @@ export function SearchBar() {
         )}
       </div>
 
-      {isOpen && suggestions.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50 max-h-96 overflow-y-auto">
-          <div className="py-2">
-            {suggestions.map((product, index) => (
+      <AnimatePresence>
+        {isOpen && suggestions.length > 0 && (
+          <motion.div
+            key="suggestions"
+            className="relative mx-10 max-w-6xl top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50 max-h-96 overflow-y-auto"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <div className="py-2">
+              {suggestions.map((product, index) => (
+                <Link
+                  key={product.id}
+                  href={`/producto/${product.id}`}
+                  onClick={handleSuggestionClick}
+                  className={`flex items-center px-4 py-3 hover:bg-gray-50 transition-colors ${
+                    index === selectedIndex ? "bg-amber-50" : ""
+                  }`}
+                >
+                  <div className="relative w-12 h-12 bg-gray-100 rounded mr-3 flex-shrink-0">
+                    <Image
+                      src={product.images[0] || "/placeholder.svg"}
+                      alt={product.name}
+                      fill
+                      className="object-cover rounded"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-[var(--colorLetra)] truncate">
+                      {product.name}
+                    </p>
+                    <p className="text-xs text-[var(--colorLetra)]">
+                      {product.categories
+                        .map((category) => category.title)
+                        .join(", ") || ""}
+                    </p>
+                    <p className="text-sm font-semibold text-[var(--fondoSecundario)]">
+                      ${product.price.toFixed(2)}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            <div className="border-t border-gray-100 px-4 py-3">
               <Link
-                key={product.id}
-                href={`/producto/${product.id}`}
-                onClick={handleSuggestionClick}
-                className={`flex items-center px-4 py-3 hover:bg-gray-50 transition-colors ${
-                  index === selectedIndex ? "bg-amber-50" : ""
-                }`}
+                href={`/buscar?q=${encodeURIComponent(query)}`}
+                className="text-sm text-[var(--fondoSecundario)] hover:text-amber-700 font-medium"
+                onClick={() => setIsOpen(false)}
               >
-                <div className="relative w-12 h-12 bg-gray-100 rounded mr-3 flex-shrink-0">
-                  <Image
-                    src={product.images[0] || "/placeholder.svg"}
-                    alt={product.name}
-                    fill
-                    className="object-cover rounded"
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[var(--colorLetra)] truncate">
-                    {product.name}
-                  </p>
-                  <p className="text-xs text-[var(--colorLetra)]">
-                    {product.categories
-                      .map((category) => category.title)
-                      .join(", ") || ""}
-                  </p>
-                  <p className="text-sm font-semibold text-[var(--fondoSecundario)]">
-                    ${product.price.toFixed(2)}
-                  </p>
-                </div>
+                Ver todos los resultados para "{query}"
               </Link>
-            ))}
-          </div>
-          <div className="border-t border-gray-100 px-4 py-3">
-            <Link
-              href={`/buscar?q=${encodeURIComponent(query)}`}
-              className="text-sm text-[var(--fondoSecundario)] hover:text-amber-700 font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              Ver todos los resultados para "{query}"
-            </Link>
-          </div>
-        </div>
-      )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {isOpen && query.trim() && suggestions.length === 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+        <div className="relative mx-10 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50">
           <div className="px-4 py-6 text-center text-gray-500">
             <Search className="h-8 w-8 mx-auto mb-2 text-gray-300" />
             <p className="text-sm">No se encontraron productos</p>

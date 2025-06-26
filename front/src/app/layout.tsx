@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Montserrat } from "next/font/google";
+import { WhatsAppButton } from "@/components/whatsAppButton";
 
 const inter = Inter({ subsets: ["latin"] });
 const montserrat = Montserrat({
@@ -33,6 +34,7 @@ export default function RootLayout({
         <CartProvider>
           <Header />
           {children}
+          <WhatsAppButton />
           <Toaster />
           <Footer />
         </CartProvider>

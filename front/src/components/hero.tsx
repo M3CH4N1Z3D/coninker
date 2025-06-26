@@ -14,7 +14,7 @@ export function Hero() {
         />
       </div>
 
-      <div className="absolute bottom-0 right-0 z-10 text-right text-white px-8 pb-10 max-w-4xl">
+      <div className="absolute bottom-0 right-0 z-1 text-right text-white px-8 pb-10 max-w-4xl">
         <p className="text-2xl md:text-3xl mb-8 font-bold">
           Atmosferas que inspiran, muebles
           <br /> que conectan con tu escencia.
