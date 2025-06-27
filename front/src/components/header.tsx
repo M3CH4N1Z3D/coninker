@@ -90,13 +90,13 @@ export function Header() {
         {/* Main header */}
         <div className="bg-[var(--fondoPrincipal)] shadow-sm">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between gap-8">
-            <div className="flex items-center mx-auto">
+            <div className="flex items-center mx-auto ml-[43%]">
               <Link href="/" className="flex items-center space-x-2">
                 <Image
                   src="/logo.webp"
                   alt="Logo"
-                  width={100}
-                  height={100}
+                  width={200}
+                  height={200}
                   priority
                 />
               </Link>
@@ -107,7 +107,7 @@ export function Header() {
                   onClick={() => setShowSearch((prev) => !prev)}
                   className="text-[var(--colorLetra)] hover:text-[var(--hoverColor)] transition"
                 >
-                  <Search size={22} />
+                  <Search size={40} />
                 </Button>
               </div>
 

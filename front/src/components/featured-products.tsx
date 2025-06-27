@@ -66,7 +66,7 @@ export function FeaturedProducts() {
   return (
     <section id="decoracion" className="py-20 bg-[var(--fondoPrincipal)]">
       <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center text-[var(--colorLetra)] mb-16">
+        <h2 className="text-4xl font-bold text-center text-[var(--colorLetra)] mb-16 hover:cursor-pointer hover:text-[var(--fondoSecundario)]">
           Asi complementamos los espacios
           <br /> con nuestras piezas...
         </h2>

@@ -9,7 +9,7 @@ export function WhatsAppButton() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chatear por WhatsApp"
-        className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#5b3b1d] hover:bg-green-600 shadow-lg transition-transform duration-200 hover:scale-105"
+        className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-[var(--hoverColor)] hover:bg-green-600 shadow-lg transition-transform duration-200 hover:scale-105"
       >
         <FaWhatsapp size={24} className="text-white" />
       </Link>

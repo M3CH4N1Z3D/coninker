@@ -31,7 +31,6 @@ export default function ListProducts() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
         },
       });
 

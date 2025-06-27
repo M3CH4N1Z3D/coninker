@@ -37,6 +37,7 @@ export interface Product {
   colors?: string[];
   selectedColor?: string;
   isFeatured: boolean;
+  updatedAt?: string;
 }
 
 export interface Category {
@@ -44,4 +45,27 @@ export interface Category {
   title: string;
   image: string;
   description: string;
+}
+
+export interface PriceElasticSliderProps {
+  defaultValue?: number;
+  startingValue?: number;
+  maxValue?: number;
+  className?: string;
+  isStepped?: boolean;
+  stepSize?: number;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  onChange: (value: number) => void;
+}
+
+export interface PriceSliderProps {
+  defaultValue: number;
+  startingValue: number;
+  maxValue: number;
+  isStepped: boolean;
+  stepSize: number;
+  leftIcon: React.ReactNode;
+  rightIcon: React.ReactNode;
+  onChange?: (value: number) => void;
 }
