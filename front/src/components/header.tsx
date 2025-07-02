@@ -129,7 +129,7 @@ export function Header() {
                       .normalize("NFD")
                       .replace(/[\u0300-\u036f]/g, "")
                       .replace(/\s+/g, "-")}`}
-                    className="text-[var(--colorLetra)] hover:text-[var(--hoverColor)] transition-colors font-medium"
+                    className="relative text-[var(--colorLetra)] hover:text-[var(--hoverColor)] transition-colors font-medium after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:scale-x-0 after:bg-[var(--hoverColor)] after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100"
                   >
                     {option.title}
                   </Link>

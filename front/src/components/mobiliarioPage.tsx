@@ -6,6 +6,7 @@ import { ChevronDown, Grid3x3, Image as ImageIcon, List } from "lucide-react";
 import { Product } from "@/interfaces/types";
 import { Category } from "@/interfaces/types";
 import PriceRangeSlider from "./ui/priceRangeSlider";
+import SortDropdown from "./ui/sortDropDown";
 
 const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 
@@ -110,18 +111,7 @@ export default function MobiliarioPage() {
         </div>
 
         {/* Menú de ordenamiento */}
-        <select
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-          className="text-sm border rounded px-3 py-1"
-        >
-          <option value="name-asc">Alfabéticamente A-Z</option>
-          <option value="name-desc">Alfabéticamente Z-A</option>
-          <option value="price-asc">Precio (menor-mayor)</option>
-          <option value="price-desc">Precio (mayor-menor)</option>
-          <option value="date-asc">Fecha antiguo a reciente</option>
-          <option value="date-desc">Fecha reciente a antiguo</option>
-        </select>
+        <SortDropdown onChange={(value) => setSortOption(value)} />
       </section>
 
       {/* Cuerpo principal */}
