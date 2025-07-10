@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { CreateCategoryDto } from "../dto/category.dto";
+import { CategoryDto } from "../dto/category.dto";
 import { categoryService } from "../services/category.service";
 
 export class CategoryController {
@@ -9,21 +9,21 @@ export class CategoryController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const categoryData: CreateCategoryDto = req.body;
+      const categoryData: CategoryDto = req.body;
 
-      // Basic validation (more comprehensive validation should be done using a library like class-validator)
       if (!categoryData.title) {
-        res.status(400).json({ message: "Missing required fieldsssss" });
+        res.status(400).json({ message: "El campo 'title' es obligatorio." });
         return;
       }
 
       const newCategory = await categoryService.createCategory(categoryData);
+
       res.status(201).json({
-        message: "Category created successfully",
+        message: "Categoría creada exitosamente",
         data: { category: newCategory },
       });
     } catch (error: any) {
-      console.error("Error creating product:", error);
+      console.error("Error al crear la categoría:", error);
       next(error);
     }
   }
@@ -37,21 +37,24 @@ export class CategoryController {
       const categories = await categoryService.getAllCategories();
 
       if (categories.length === 0) {
-        res
-          .status(200)
-          .json({ message: "No hay categorias disponibles", categories: [] });
+        res.status(200).json({
+          message: "No hay categorías disponibles",
+          categories: [],
+        });
         return;
       }
 
-      res
-        .status(200)
-        .json({ message: "Categorias obtenidas correctamente", categories });
+      res.status(200).json({
+        message: "Categorías obtenidas correctamente",
+        categories,
+      });
     } catch (error) {
       res
         .status(500)
-        .json({ message: "Error interno al recuperar categorias." });
+        .json({ message: "Error interno al recuperar categorías." });
     }
   }
+
   async getProductsByCategoryTitle(
     req: Request,
     res: Response,

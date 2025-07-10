@@ -5,52 +5,140 @@ export const createDefaultCategories = async () => {
   try {
     const categoryRepository = AppDataSource.getRepository(Category);
 
-    const defaultCategories = [
-      {
-        title: "Mesas",
-        image: "",
-        description: "Mesas de comedor, centro y auxiliares para cada espacio",
-      },
-      {
-        title: "Sillas",
-        image: "",
-        description: "Sillas ergonómicas y de diseño para tu hogar u oficina",
-      },
-      {
-        title: "Sofás",
-        image: "",
-        description: "Confort y estilo para tu sala de estar",
-      },
-      {
-        title: "Estanterías",
-        image: "",
-        description: "Soluciones de almacenamiento funcionales y decorativas",
-      },
-      {
-        title: "Iluminación",
-        image: "",
-        description: "Lámparas y accesorios para crear la atmósfera perfecta",
-      },
-      {
-        title: "Decoración",
-        image: "",
-        description: "Complementos que dan vida y personalidad a tu hogar",
-      },
-    ];
-
-    for (const category of defaultCategories) {
-      const existingCategory = await categoryRepository.findOne({
-        where: { title: category.title },
+    const findOrCreate = async (
+      title: string,
+      description: string,
+      image: string,
+      parent?: Category
+    ): Promise<Category> => {
+      let category = await categoryRepository.findOne({
+        where: { title },
       });
-      if (!existingCategory) {
+
+      if (!category) {
+        category = categoryRepository.create({
+          title,
+          description,
+          image,
+          parent,
+        });
         await categoryRepository.save(category);
-        console.log(`✅ Categoría creada: ${category.title}`);
+        console.log(`✅ Categoría creada: ${title}`);
       } else {
-        console.log(
-          `🔍 Categoría "${category.title}" ya existe, omitiendo creación.`
-        );
+        console.log(`🔍 Categoría ya existe: ${title}`);
       }
-    }
+
+      return category;
+    };
+
+    // Categorías raíz
+    const mobiliario = await findOrCreate(
+      "MOBILIARIO",
+      "Muebles para el hogar",
+      "",
+      undefined
+    );
+    const objetos = await findOrCreate(
+      "OBJETOS",
+      "Objetos decorativos y funcionales",
+      "",
+      undefined
+    );
+
+    // Subcategorías de MOBILIARIO
+    const mesas = await findOrCreate(
+      "Mesas",
+      "Mesas para diferentes espacios",
+      "",
+      mobiliario
+    );
+    await findOrCreate(
+      "Mesas de centro",
+      "Mesas de centro para sala",
+      "",
+      mesas
+    );
+    await findOrCreate(
+      "Mesas auxiliares",
+      "Mesas pequeñas de apoyo",
+      "",
+      mesas
+    );
+    await findOrCreate("Mesas de noche", "Mesas para dormitorio", "", mesas);
+
+    await findOrCreate(
+      "Sillas",
+      "Sillas ergonómicas y de diseño",
+      "",
+      mobiliario
+    );
+    await findOrCreate("Poltronas", "Sillones individuales", "", mobiliario);
+    await findOrCreate(
+      "Sofás",
+      "Confort y estilo para tu sala",
+      "",
+      mobiliario
+    );
+    await findOrCreate(
+      "Butaco",
+      "Asientos altos y funcionales",
+      "",
+      mobiliario
+    );
+    await findOrCreate(
+      "Zapateros",
+      "Almacenamiento para calzado",
+      "",
+      mobiliario
+    );
+    await findOrCreate(
+      "Muebles TV",
+      "Muebles para equipos multimedia",
+      "",
+      mobiliario
+    );
+    await findOrCreate("Consola", "Consolas decorativas", "", mobiliario);
+    await findOrCreate(
+      "Bife",
+      "Muebles bife para comedor o sala",
+      "",
+      mobiliario
+    );
+    await findOrCreate(
+      "Escritorios",
+      "Escritorios para oficina o estudio",
+      "",
+      mobiliario
+    );
+    await findOrCreate(
+      "Bares",
+      "Muebles para bar y entretenimiento",
+      "",
+      mobiliario
+    );
+    await findOrCreate(
+      "Muebles Auxiliares",
+      "Complementos funcionales",
+      "",
+      mobiliario
+    );
+
+    // Subcategorías de OBJETOS
+    await findOrCreate("Base Monitor", "Soportes para monitores", "", objetos);
+    await findOrCreate("Candelabros", "Decoración con velas", "", objetos);
+    await findOrCreate("Porta Vinos", "Almacenamiento para vinos", "", objetos);
+    await findOrCreate(
+      "Repisas",
+      "Repisas decorativas y funcionales",
+      "",
+      objetos
+    );
+    await findOrCreate(
+      "Bandejas",
+      "Bandejas para servir o decorar",
+      "",
+      objetos
+    );
   } catch (error) {
     console.error("❌ Error durante la creación de categorías:", error);
   }

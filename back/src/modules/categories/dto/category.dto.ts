@@ -1,8 +1,9 @@
-// Data Transfer Object (DTO) for creating a new Customer
-
-export interface CreateCategoryDto {
+export interface CategoryDto {
   id: string;
   title: string;
   image: string;
   description: string;
+  parent?: CategoryDto;
+  children?: CategoryDto[];
+  parentId?: string;
 }

@@ -2,7 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
-import categories from "@/lib/categories";
+import categories from "@/lib/navOptions";
 import { useEffect, useState } from "react";
 import { Category } from "@/interfaces/types";
 
@@ -14,7 +14,7 @@ export function Categories() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/categories", {
+      const response = await fetch(`${apiUrl}/api/categories`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

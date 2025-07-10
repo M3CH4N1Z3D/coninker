@@ -45,6 +45,14 @@ export interface Category {
   title: string;
   image: string;
   description: string;
+  children?: Category[];
+}
+
+export interface CategoryState {
+  categories: Category[];
+  setCategories: (categories: Category[]) => void;
+  isLoading: boolean;
+  fetchCategories: () => Promise<void>;
 }
 
 export interface PriceElasticSliderProps {

@@ -1,11 +1,5 @@
 const navOptions = [
   {
-    title: "MOBILIARIO",
-  },
-  {
-    title: "OBJETOS",
-  },
-  {
     title: "HECHO A LA MEDIDA",
   },
   {

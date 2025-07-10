@@ -1,7 +1,7 @@
-import { Repository, Not, In } from "typeorm";
+import { Repository, Not, In, IsNull } from "typeorm";
 import { AppDataSource } from "../../../database/data-source";
 import { Category } from "../../categories/entities/category.entity";
-import { CreateCategoryDto } from "../dto/category.dto";
+import { CategoryDto } from "../dto/category.dto";
 
 export class CategoryService {
   private categoryRepository: Repository<Category>;
@@ -10,9 +10,22 @@ export class CategoryService {
     this.categoryRepository = AppDataSource.getRepository(Category);
   }
 
-  async createCategory(categoryData: CreateCategoryDto): Promise<Category> {
+  async createCategory(categoryData: CategoryDto): Promise<Category> {
     try {
-      const newCategory = this.categoryRepository.create(categoryData);
+      const { parentId, ...rest } = categoryData;
+
+      const newCategory = this.categoryRepository.create(rest);
+
+      if (parentId) {
+        const parentCategory = await this.categoryRepository.findOneBy({
+          id: parentId,
+        });
+        if (!parentCategory) {
+          throw new Error("Parent category not found.");
+        }
+        newCategory.parent = parentCategory;
+      }
+
       await this.categoryRepository.save(newCategory);
       return newCategory;
     } catch (error) {
@@ -22,17 +35,19 @@ export class CategoryService {
   }
 
   async getAllCategories(): Promise<Category[]> {
-    try {
-      return await this.categoryRepository.find();
-    } catch (error) {
-      throw new Error("Error al recuperar categorias.");
-    }
+    return await this.categoryRepository.find({
+      where: { parent: IsNull() }, // solo categorías raíz
+      relations: ["children", "children.children"], // 👈 importante: carga subcategorías y sub-subcategorías
+    });
   }
+
   async getProductsByCategoryTitle(title: string): Promise<Category | null> {
     try {
       return await this.categoryRepository
         .createQueryBuilder("category")
         .leftJoinAndSelect("category.products", "product")
+        .leftJoinAndSelect("category.children", "children")
+        .leftJoinAndSelect("category.parent", "parent")
         .where("unaccent(lower(category.title)) = unaccent(lower(:title))", {
           title,
         })

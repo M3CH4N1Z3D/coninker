@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export function Hero() {
   return (
-    <section className="relative h-[25rem] flex items-center justify-center overflow-hidden mx-10">
+    <section className="relative h-[25rem] w-screen flex items-center justify-center overflow-hidden mx-auto transform translate-x-[1rem] translate-y-[1rem]">
       <div className="absolute inset-0 bg-neutral-900/40"></div>
       <div className="absolute inset-0 hero-bounce">
         <Image

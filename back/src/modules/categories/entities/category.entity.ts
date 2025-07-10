@@ -4,7 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToMany, // Import OneToMany
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
 } from "typeorm";
 import { Product } from "../../products/entities/product.entity";
 
@@ -24,6 +27,17 @@ export class Category {
 
   @ManyToMany(() => Product, (product) => product.categories)
   products!: Product[];
+
+  // 👇 Relación con categoría padre
+  @ManyToOne(() => Category, (category) => category.children, {
+    nullable: true,
+  })
+  @JoinColumn({ name: "parent_id" })
+  parent?: Category;
+
+  // 👇 Relación con subcategorías hijas
+  @OneToMany(() => Category, (category) => category.parent)
+  children?: Category[];
 
   @CreateDateColumn({ type: "timestamp with time zone" })
   created_at!: Date;

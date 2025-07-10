@@ -30,9 +30,9 @@ export function CartDropdown() {
         className="relative"
         onClick={() => setIsOpen(true)}
       >
-        <ShoppingBag className="h-5 w-5" />
+        <ShoppingBag className="h-8 w-8" />
         {totalItems > 0 && (
-          <span className="absolute -top-1 -right-1 bg-[#1c1c1c] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 bg-[#1c1c1c] text-white text-xs w-8 h-8 rounded-full flex items-center justify-center">
             {totalItems}
           </span>
         )}

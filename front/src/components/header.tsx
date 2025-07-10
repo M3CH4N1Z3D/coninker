@@ -6,17 +6,17 @@ import { CartDropdown } from "@/components/cart-dropdown";
 import { SearchBar } from "@/components/search-bar";
 import { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
-import navOptions from "@/lib/categories";
+import { useCategoryStore } from "@/stores/categoryStore";
 import {
   motion,
   useMotionValue,
   useTransform,
   AnimatePresence,
 } from "framer-motion";
+import { NavBar } from "./NavBar";
 
 export function Header() {
   const headerRef = useRef<HTMLDivElement>(null);
-
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<"left" | "right">("right");
   const [showSearch, setShowSearch] = useState(false);
@@ -31,6 +31,7 @@ export function Header() {
     }
   }, []);
 
+  const messages = ["Envíos a todo Colombia", "Producto 100% Colombiano"];
   const next = () => {
     setDirection("right");
     setIndex((prev) => (prev + 1) % messages.length);
@@ -40,12 +41,10 @@ export function Header() {
     setIndex((prev) => (prev - 1 + messages.length) % messages.length);
   };
 
-  const messages = ["Envíos a todo Colombia", "Producto 100% Colombiano"];
-  const containerRef = useRef<HTMLDivElement>(null);
-
   return (
     <>
       <header className="sticky top-0 z-100">
+        {/* Banner superior */}
         <div className="bg-[var(--fondoSecundario)] text-white py-2">
           <div className="container mx-auto px-4 flex justify-center items-center">
             <div className="flex items-center gap-4">
@@ -55,7 +54,6 @@ export function Header() {
               >
                 <ChevronLeft size={20} />
               </button>
-
               <div className="relative w-[20rem] h-[1.3rem] overflow-hidden text-center">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
@@ -76,7 +74,6 @@ export function Header() {
                   </motion.div>
                 </AnimatePresence>
               </div>
-
               <button
                 onClick={next}
                 className="text-white hover:text-amber-400 transition-colors"
@@ -87,16 +84,19 @@ export function Header() {
           </div>
         </div>
 
-        {/* Main header */}
+        {/* Header principal */}
         <div className="bg-[var(--fondoPrincipal)] shadow-sm">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between gap-8">
-            <div className="flex items-center mx-auto ml-[43%]">
-              <Link href="/" className="flex items-center space-x-2">
+          <div className="container mx-auto px-4 py-1 flex items-center justify-between gap-8">
+            <div className="flex items-center mx-auto justify-center">
+              <Link
+                href="/"
+                className="flex items-center space-x-2 transform translate-x-16"
+              >
                 <Image
                   src="/logo.webp"
                   alt="Logo"
-                  width={200}
-                  height={200}
+                  width={160}
+                  height={160}
                   priority
                 />
               </Link>
@@ -107,38 +107,23 @@ export function Header() {
                   onClick={() => setShowSearch((prev) => !prev)}
                   className="text-[var(--colorLetra)] hover:text-[var(--hoverColor)] transition"
                 >
-                  <Search size={40} />
+                  <Search className="w-8 h-8" />
                 </Button>
               </div>
-
               <div className="flex items-center space-x-4 flex-shrink-0 text-[var(--colorLetra)] hover:text-[var(--hoverColor)]">
                 <CartDropdown />
               </div>
             </div>
           </div>
 
-          {/* Navigation */}
-          <nav className="border-t">
-            <div className="container mx-auto px-4">
-              <div className="flex justify-center space-x-8 py-4">
-                {navOptions.map((option) => (
-                  <Link
-                    key={option.title}
-                    href={`/${option.title
-                      .toLowerCase()
-                      .normalize("NFD")
-                      .replace(/[\u0300-\u036f]/g, "")
-                      .replace(/\s+/g, "-")}`}
-                    className="relative text-[var(--colorLetra)] hover:text-[var(--hoverColor)] transition-colors font-medium after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:scale-x-0 after:bg-[var(--hoverColor)] after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100"
-                  >
-                    {option.title}
-                  </Link>
-                ))}
-              </div>
-            </div>
+          {/* Navegación */}
+
+          <nav className="flex justify-center border-t">
+            <NavBar />
           </nav>
         </div>
       </header>
+
       {showSearch && (
         <motion.div
           key="searchbar"
@@ -151,6 +136,7 @@ export function Header() {
           <SearchBar />
         </motion.div>
       )}
+
       <AnimatePresence>
         {showSearch && (
           <motion.div
