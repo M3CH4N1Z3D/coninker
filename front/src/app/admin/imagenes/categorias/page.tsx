@@ -1,4 +1,4 @@
-import ListCategories from "@/components/ListCategories";
+import ListCategories from "@/components/admin/ListCategories";
 import { AuthProvider } from "@/context/AuthContext";
 import type { Metadata } from "next";
 

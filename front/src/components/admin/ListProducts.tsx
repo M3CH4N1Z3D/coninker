@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import Modal from "./ui/Modal";
-import { Category } from "@/interfaces/types";
+import Modal from "../ui/Modal";
+import { Category, ProductFormData } from "@/interfaces/types";
 import { Product } from "@/interfaces/types";
 import ProductForm from "./ProductForm";
 
@@ -63,6 +63,22 @@ export default function ListProducts() {
     window.history.back();
   };
 
+  const handleCreateProductForm = async (data: ProductFormData) => {
+    const newProduct: Product = {
+      ...data,
+      fullDescription: data.fullDescription ?? data.description,
+      images: [],
+      videos: [],
+      rating: 0,
+      reviewCount: 0,
+      selectedColor: undefined,
+      updatedAt: undefined,
+      id: undefined,
+    };
+
+    await handleCreateProduct(newProduct);
+  };
+
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
       <span
@@ -119,7 +135,7 @@ export default function ListProducts() {
                 <tr key={product.name} className="hover:bg-gray-50">
                   <td className="border p-3">
                     <span
-                      onClick={() => handleNavigate(product.id)}
+                      onClick={() => product.id && handleNavigate(product.id)}
                       className="text-indigo-600 hover:underline cursor-pointer"
                     >
                       {product.name}
@@ -143,7 +159,7 @@ export default function ListProducts() {
       >
         <ProductForm
           onCancel={() => setIsModalOpen(false)}
-          onSave={handleCreateProduct}
+          onSave={handleCreateProductForm}
         />
       </Modal>
     </div>

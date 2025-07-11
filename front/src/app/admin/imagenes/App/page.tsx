@@ -1,4 +1,4 @@
-import ImageConfigApp from "@/components/ImageConfigApp";
+import ImageConfigApp from "@/components/admin/ImageConfigApp";
 import { AuthProvider } from "@/context/AuthContext";
 import type { Metadata } from "next";
 

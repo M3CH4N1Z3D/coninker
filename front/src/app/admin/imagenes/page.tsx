@@ -1,4 +1,4 @@
-import ImageDashboard from "@/components/imageDashboard";
+import ImageDashboard from "@/components/admin/imageDashboard";
 import { AuthProvider } from "@/context/AuthContext";
 import type { Metadata } from "next";
 

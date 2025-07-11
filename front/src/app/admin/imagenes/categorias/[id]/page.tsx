@@ -1,6 +1,6 @@
 import { AuthProvider } from "@/context/AuthContext";
 import type { Metadata } from "next";
-import ConfigImageCategory from "@/components/configImageCategory";
+import ConfigImageCategory from "@/components/admin/configImageCategory";
 
 export const metadata: Metadata = {
   title: "Ingesa al panel de configuración | Coninker",

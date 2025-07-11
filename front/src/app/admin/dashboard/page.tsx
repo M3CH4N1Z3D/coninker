@@ -1,4 +1,4 @@
-import AdminDashboard from "@/components/AdminDashboard";
+import AdminDashboard from "@/components/admin/AdminDashboard";
 import { AuthProvider } from "@/context/AuthContext";
 import type { Metadata } from "next";
 

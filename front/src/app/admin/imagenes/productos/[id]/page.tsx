@@ -1,5 +1,4 @@
-import ProductDetail from "@/components/product-detail";
-import ConfigImageProduct from "@/components/configImageProduct";
+import ConfigImageProduct from "@/components/admin/configImageProduct";
 import { AuthProvider } from "@/context/AuthContext";
 import type { Metadata } from "next";
 

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import Modal from "./ui/Modal";
+import Modal from "../ui/Modal";
 import { Category } from "@/interfaces/types";
 import ProductForm from "./ProductForm";
 
@@ -145,18 +145,6 @@ export default function ListCategories() {
           </tbody>
         </table>
       )}
-
-      {/* Modal para crear una nueva categoria */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Crear Nueva Categoria"
-      >
-        <ProductForm
-          onCancel={() => setIsModalOpen(false)}
-          onSave={handleCreateCategory}
-        />
-      </Modal>
     </div>
   );
 }

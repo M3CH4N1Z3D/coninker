@@ -1,4 +1,4 @@
-import LoginForm from "@/components/LoginForm";
+import LoginForm from "@/components/admin/LoginForm";
 import { AuthProvider } from "@/context/AuthContext";
 import type { Metadata } from "next";
 

@@ -1,4 +1,4 @@
-import ListProducts from "@/components/ListProducts";
+import ListProducts from "@/components/admin/ListProducts";
 import { AuthProvider } from "@/context/AuthContext";
 import type { Metadata } from "next";
 
