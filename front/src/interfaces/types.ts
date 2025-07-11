@@ -46,6 +46,7 @@ export interface Category {
   image: string;
   description: string;
   children?: Category[];
+  showInLanding?: boolean;
 }
 
 export interface CategoryState {

@@ -25,6 +25,9 @@ export class Category {
   @Column({ type: "varchar", length: 5000, nullable: true })
   description!: string;
 
+  @Column({ type: "boolean", default: false })
+  showInLanding!: boolean;
+
   @ManyToMany(() => Product, (product) => product.categories)
   products!: Product[];
 

@@ -16,6 +16,14 @@ export class CategoryController {
         return;
       }
 
+      if (typeof categoryData.showInLanding !== "boolean") {
+        res.status(400).json({
+          message:
+            "El campo 'showInLanding' es obligatorio y debe ser booleano.",
+        });
+        return;
+      }
+
       const newCategory = await categoryService.createCategory(categoryData);
 
       res.status(201).json({
@@ -81,6 +89,61 @@ export class CategoryController {
       res
         .status(500)
         .json({ message: "Error interno al obtener la categoría." });
+    }
+  }
+  async getCategoryById(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const categoryId = req.params.id;
+
+      if (!categoryId) {
+        res.status(400).json({ message: "ID de categoria requerido" });
+        return;
+      }
+
+      const category = await categoryService.getCategoryById(categoryId);
+
+      if (!category) {
+        res.status(404).json({ message: "categoria no encontrada" });
+        return;
+      }
+
+      res.status(200).json({ category }); // ✅ Devuelve el producto correctamente
+    } catch (error) {
+      console.error("🚨 Error interno al recuperar la categoria:", error);
+      res
+        .status(500)
+        .json({ message: "Error interno al recuperar la categoria." });
+    }
+  }
+  async updateCategory(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { id } = req.params;
+      const categoryData = req.body;
+
+      const updatedCategory = await categoryService.updateCategory(
+        id,
+        categoryData
+      );
+
+      if (!updatedCategory) {
+        res.status(404).json({ message: "Categoria no encontrada" });
+        return;
+      }
+
+      res.status(200).json({ category: updatedCategory });
+    } catch (error) {
+      console.error("🚨 Error al actualizar la categoria:", error);
+      res
+        .status(500)
+        .json({ message: "Error interno al actualizar la categoria." });
     }
   }
 }

@@ -6,4 +6,5 @@ export interface CategoryDto {
   parent?: CategoryDto;
   children?: CategoryDto[];
   parentId?: string;
+  showInLanding?: boolean;
 }

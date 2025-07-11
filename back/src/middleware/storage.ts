@@ -7,9 +7,17 @@ const storage = new CloudinaryStorage({
   params: async (req: any, file: any) => {
     const productName = req.body?.productName;
     const colorHex = req.body?.colorHex;
-    console.log("📦 Campos recibidos:", { productName, colorHex });
-    console.log("🗂️ File data:", file);
+    const categoryTitle = req.body?.categoryTitle;
 
+    if (categoryTitle) {
+      const folder = `categorías/${categoryTitle}`;
+      return {
+        folder,
+        format: "webp",
+        resource_type: "image",
+        transformation: [{ width: 800, height: 800, crop: "limit" }],
+      };
+    }
     if (!productName || !colorHex) {
       throw new Error("Product name and color hex are required");
     }

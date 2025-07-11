@@ -9,11 +9,10 @@ export const createDefaultCategories = async () => {
       title: string,
       description: string,
       image: string,
-      parent?: Category
+      parent?: Category,
+      showInLanding: boolean = false
     ): Promise<Category> => {
-      let category = await categoryRepository.findOne({
-        where: { title },
-      });
+      let category = await categoryRepository.findOne({ where: { title } });
 
       if (!category) {
         category = categoryRepository.create({
@@ -21,6 +20,7 @@ export const createDefaultCategories = async () => {
           description,
           image,
           parent,
+          showInLanding,
         });
         await categoryRepository.save(category);
         console.log(`✅ Categoría creada: ${title}`);
@@ -36,13 +36,15 @@ export const createDefaultCategories = async () => {
       "MOBILIARIO",
       "Muebles para el hogar",
       "",
-      undefined
+      undefined,
+      true
     );
     const objetos = await findOrCreate(
       "OBJETOS",
       "Objetos decorativos y funcionales",
       "",
-      undefined
+      undefined,
+      true
     );
 
     // Subcategorías de MOBILIARIO
@@ -72,12 +74,19 @@ export const createDefaultCategories = async () => {
       "",
       mobiliario
     );
-    await findOrCreate("Poltronas", "Sillones individuales", "", mobiliario);
+    await findOrCreate(
+      "Poltronas",
+      "Sillones individuales",
+      "",
+      mobiliario,
+      true
+    );
     await findOrCreate(
       "Sofás",
       "Confort y estilo para tu sala",
       "",
-      mobiliario
+      mobiliario,
+      true
     );
     await findOrCreate(
       "Butaco",
@@ -89,20 +98,23 @@ export const createDefaultCategories = async () => {
       "Zapateros",
       "Almacenamiento para calzado",
       "",
-      mobiliario
+      mobiliario,
+      true
     );
     await findOrCreate(
       "Muebles TV",
       "Muebles para equipos multimedia",
       "",
-      mobiliario
+      mobiliario,
+      true
     );
     await findOrCreate("Consola", "Consolas decorativas", "", mobiliario);
     await findOrCreate(
       "Bife",
       "Muebles bife para comedor o sala",
       "",
-      mobiliario
+      mobiliario,
+      true
     );
     await findOrCreate(
       "Escritorios",
@@ -120,8 +132,9 @@ export const createDefaultCategories = async () => {
       "Muebles Auxiliares",
       "Complementos funcionales",
       "",
-      mobiliario
-    );
+      mobiliario,
+      true
+    ); // MUEBLES MULTIPLE
 
     // Subcategorías de OBJETOS
     await findOrCreate("Base Monitor", "Soportes para monitores", "", objetos);
