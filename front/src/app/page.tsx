@@ -8,7 +8,7 @@ import { PromoModal } from "@/components/promo-modal";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-[var(--fondoPrincipal)]">
       <Hero />
       <Categories />
       <FeaturedProducts />

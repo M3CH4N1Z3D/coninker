@@ -71,9 +71,9 @@ export default function ListProducts() {
       videos: [],
       rating: 0,
       reviewCount: 0,
-      selectedColor: undefined,
       updatedAt: undefined,
       id: undefined,
+      materials: [],
     };
 
     await handleCreateProduct(newProduct);

@@ -17,15 +17,21 @@ export default function ProductForm({
     price: 0,
     categories: [],
     stock: 0,
-    width: 0,
-    height: 0,
-    length: 0,
-    weight: 0,
-    colors: [],
+    dimensions: {
+      width: 0,
+      height: 0,
+      length: 0,
+      weight: 0,
+    },
+    structureColors: [],
+    principalColors: [],
     isFeatured: false,
   });
 
   const [categories, setCategories] = useState<Category[]>([]);
+  const [categoryAncestors, setCategoryAncestors] = useState<
+    Record<string, Category[]>
+  >({});
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [colorInput, setColorInput] = useState("#000000");
   const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
@@ -38,6 +44,21 @@ export default function ProductForm({
         if (!response.ok)
           throw new Error(data.message || "Error al obtener categorías");
         setCategories(data.categories);
+
+        // Construir el mapa de ancestros
+        const ancestorMap: Record<string, Category[]> = {};
+
+        const traverse = (node: Category, parentStack: Category[] = []) => {
+          ancestorMap[node.id] = [...parentStack];
+          if (node.children) {
+            node.children.forEach((child) =>
+              traverse(child, [...parentStack, node])
+            );
+          }
+        };
+
+        data.categories.forEach((root: Category) => traverse(root));
+        setCategoryAncestors(ancestorMap);
       } catch (error) {
         console.error("Error al obtener categorías:", error);
       }
@@ -54,21 +75,61 @@ export default function ProductForm({
   };
 
   const handleCategoryChange = (category: Category) => {
+    const isSelected = formData.categories.some(
+      (cat) => cat.id === category.id
+    );
+    const ancestors = categoryAncestors[category.id] || [];
+
+    const newSelection = isSelected
+      ? formData.categories.filter(
+          (cat) =>
+            cat.id !== category.id && !ancestors.some((a) => a.id === cat.id)
+        )
+      : [
+          ...formData.categories,
+          ...ancestors.filter(
+            (ancestor) =>
+              !formData.categories.some((cat) => cat.id === ancestor.id)
+          ),
+          category,
+        ];
+
     setFormData((prev) => ({
       ...prev,
-      categories: prev.categories.some((cat) => cat.id === category.id)
-        ? prev.categories.filter((cat) => cat.id !== category.id)
-        : [...prev.categories, category],
+      categories: newSelection,
     }));
   };
 
-  const handleColorChange = (color: string) => {
+  const handleAddStructureColor = (color: string) => {
     setFormData((prev) => ({
       ...prev,
-      colors: prev.colors.includes(color)
-        ? prev.colors.filter((c) => c !== color)
-        : [...prev.colors, color],
+      structureColors: prev.structureColors.includes(color)
+        ? prev.structureColors.filter((c) => c !== color)
+        : [...prev.structureColors, color],
     }));
+  };
+
+  const handleAddPrincipalColor = (color: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      principalColors: prev.principalColors.includes(color)
+        ? prev.principalColors.filter((c) => c !== color)
+        : [...prev.principalColors, color],
+    }));
+  };
+
+  const flattenCategories = (
+    nodes: Category[],
+    level: number = 0
+  ): (Category & { depth: number })[] => {
+    let result: (Category & { depth: number })[] = [];
+    for (const node of nodes) {
+      result.push({ ...node, depth: level });
+      if (node.children?.length) {
+        result = result.concat(flattenCategories(node.children, level + 1));
+      }
+    }
+    return result;
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -77,6 +138,7 @@ export default function ProductForm({
     const payload = {
       ...formData,
       fullDescription: formData.fullDescription || formData.description,
+      categories: formData.categories.map((cat) => cat.id),
     };
 
     const authToken = localStorage.getItem("authToken");
@@ -178,49 +240,35 @@ export default function ProductForm({
 
       <h3 className="text-lg font-bold mt-4">Dimensiones</h3>
       <div className="grid grid-cols-2 gap-3 mb-3">
-        <label>Longitud:</label>
-        <input
-          type="number"
-          name="length"
-          placeholder="Ej. 100cm"
-          value={formData.length || ""}
-          onChange={handleInputChange}
-          className="border p-2 w-full appearance-none"
-          required
-        />
-        <label>Ancho:</label>
-        <input
-          type="number"
-          name="width"
-          placeholder="Ej. 50cm"
-          value={formData.width || ""}
-          onChange={handleInputChange}
-          className="border p-2 w-full appearance-none"
-          required
-        />
-        <label>Altura:</label>
-        <input
-          type="number"
-          name="height"
-          placeholder="Ej. 75cm"
-          value={formData.height || ""}
-          onChange={handleInputChange}
-          className="border p-2 w-full appearance-none"
-          required
-        />
-        <label>Peso:</label>
-        <input
-          type="number"
-          name="weight"
-          placeholder="Ej. 20kg"
-          value={formData.weight || ""}
-          onChange={handleInputChange}
-          className="border p-2 w-full appearance-none"
-          required
-        />
+        {(
+          ["length", "width", "height", "weight"] as Array<
+            keyof typeof formData.dimensions
+          >
+        ).map((dim) => (
+          <div key={dim} className="col-span-1">
+            <label className="capitalize">{dim}:</label>
+            <input
+              type="number"
+              name={dim}
+              placeholder={`Ej. ${dim === "weight" ? "20kg" : "50cm"}`}
+              value={formData.dimensions[dim]}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  dimensions: {
+                    ...prev.dimensions,
+                    [dim]: Number(e.target.value),
+                  },
+                }))
+              }
+              className="border p-2 w-full appearance-none"
+              required
+            />
+          </div>
+        ))}
       </div>
 
-      <label>Colores:</label>
+      <h3 className="text-lg font-bold mt-4">Colores de Estructura</h3>
       <div className="mb-3 flex items-center gap-2">
         <input
           type="color"
@@ -230,15 +278,14 @@ export default function ProductForm({
         />
         <button
           type="button"
-          onClick={() => handleColorChange(colorInput)}
+          onClick={() => handleAddStructureColor(colorInput)}
           className="bg-indigo-600 text-white px-4 py-2 rounded-md"
         >
           Agregar Color
         </button>
       </div>
-
       <div className="flex flex-wrap gap-2">
-        {formData.colors.map((color) => (
+        {formData.structureColors.map((color) => (
           <span
             key={color}
             className="w-8 h-8 rounded-full flex items-center justify-center"
@@ -246,7 +293,7 @@ export default function ProductForm({
           >
             <button
               type="button"
-              onClick={() => handleColorChange(color)}
+              onClick={() => handleAddStructureColor(color)}
               className="text-white font-bold"
             >
               ×
@@ -254,7 +301,42 @@ export default function ProductForm({
           </span>
         ))}
       </div>
-      <div>
+
+      <h3 className="text-lg font-bold mt-4">Colores Principales</h3>
+      <div className="mb-3 flex items-center gap-2">
+        <input
+          type="color"
+          value={colorInput}
+          onChange={(e) => setColorInput(e.target.value)}
+          className="w-10 h-10 border rounded-md cursor-pointer"
+        />
+        <button
+          type="button"
+          onClick={() => handleAddPrincipalColor(colorInput)}
+          className="bg-green-600 text-white px-4 py-2 rounded-md"
+        >
+          Agregar Color
+        </button>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {formData.principalColors.map((color) => (
+          <span
+            key={color}
+            className="w-8 h-8 rounded-full flex items-center justify-center"
+            style={{ backgroundColor: color }}
+          >
+            <button
+              type="button"
+              onClick={() => handleAddPrincipalColor(color)}
+              className="text-white font-bold"
+            >
+              ×
+            </button>
+          </span>
+        ))}
+      </div>
+
+      <div className="mt-6">
         <label>Categorías:</label>
         <div className="relative mb-3">
           <div
@@ -286,8 +368,8 @@ export default function ProductForm({
           </div>
 
           {dropdownOpen && (
-            <div className="absolute bg-white border rounded-md shadow-md w-full mt-1 p-2 max-h-60 overflow-y-auto">
-              {categories.map((category) => (
+            <div className="absolute bg-white border rounded-md shadow-md w-full mt-1 p-2 max-h-60 overflow-y-auto z-10">
+              {flattenCategories(categories).map((category) => (
                 <label
                   key={category.id}
                   className="flex items-center space-x-2 py-1"
@@ -299,14 +381,17 @@ export default function ProductForm({
                     )}
                     onChange={() => handleCategoryChange(category)}
                   />
-                  <span>{category.title}</span>
+                  <span>
+                    {"—".repeat(category.depth ?? 0)} {category.title}
+                  </span>
                 </label>
               ))}
             </div>
           )}
         </div>
       </div>
-      <div className="felex flex-row gap-4">
+
+      <div className="felex flex-row gap-4 mt-2">
         <label>Producto destacado</label>
         <input
           type="checkbox"
@@ -317,7 +402,7 @@ export default function ProductForm({
         />
       </div>
 
-      <button type="submit" className="bg-blue-600 text-white p-2 rounded mt-3">
+      <button type="submit" className="bg-blue-600 text-white p-2 rounded mt-4">
         Guardar
       </button>
       <button

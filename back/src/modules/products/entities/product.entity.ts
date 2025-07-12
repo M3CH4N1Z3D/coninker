@@ -69,44 +69,29 @@ export class Product {
   @Column({ type: "jsonb", nullable: true, name: "reviews" })
   reviews!: string[];
 
-  @Column({
-    type: "decimal",
-    precision: 10,
-    scale: 2,
-    nullable: false,
-    name: "length",
-  })
-  length!: number;
+  @Column({ type: "jsonb", nullable: false, name: "dimensions" })
+  dimensions!: {
+    width: number;
+    height: number;
+    length: number;
+    weight: number;
+  };
 
   @Column({
-    type: "decimal",
-    precision: 10,
-    scale: 2,
-    nullable: false,
-    name: "width",
+    type: "varchar",
+    array: true,
+    nullable: true,
+    name: "structure_colors",
   })
-  width!: number;
+  structureColors!: string[];
 
   @Column({
-    type: "decimal",
-    precision: 10,
-    scale: 2,
-    nullable: false,
-    name: "height",
+    type: "varchar",
+    array: true,
+    nullable: true,
+    name: "principal_colors",
   })
-  height!: number;
-
-  @Column({
-    type: "decimal",
-    precision: 10,
-    scale: 2,
-    nullable: false,
-    name: "weight",
-  })
-  weight!: number;
-
-  @Column({ type: "varchar", array: true, nullable: false, name: "colors" })
-  colors!: string[];
+  principalColors!: string[];
 
   @Column({ type: "boolean", name: "isFeatured" })
   isFeatured!: boolean;

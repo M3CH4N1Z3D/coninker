@@ -3,15 +3,19 @@ export interface CreateProductDto {
   description: string;
   fullDescription?: string;
   price: number;
+  images?: string[];
   videos?: string[];
   stock: number;
   rating?: number;
   reviews?: string[];
-  length: number;
-  width: number;
-  height: number;
-  weight: number;
-  colors: string[];
+  dimensions: {
+    width: number;
+    height: number;
+    length: number;
+    weight: number;
+  };
+  structureColors?: string[];
+  principalColors?: string[];
   isFeatured: boolean;
   categories: string[]; // 🔥 Ahora `categories` solo contiene un array de IDs
 }

@@ -18,7 +18,7 @@ export default function ConfigImageProduct() {
   const [loading, setLoading] = useState(true);
   // Índice de la imagen grande a mostrar (basado en el filtrado por color)
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedColor, setSelectedColor] = useState("#000000");
+  const [selectedCombineColor, setSelectedCombineColor] = useState("#000000");
   const [cloudImages, setCloudImages] = useState<string[]>([]);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const router = useRouter();
@@ -26,9 +26,9 @@ export default function ConfigImageProduct() {
   // Esta constante corresponde a la estructura por defecto de imágenes locales (no afecta a la galería)
   const colorImages = [...Array(4)].map(
     (_, index) =>
-      `/instagram/${params.id}/${selectedColor.replace("#", "")}/${params.id}${
-        index + 1
-      }.webp`
+      `/instagram/${params.id}/${selectedCombineColor.replace("#", "")}/${
+        params.id
+      }${index + 1}.webp`
   );
 
   const isAdmin = pathname?.startsWith("/admin/imagenes");
@@ -42,7 +42,7 @@ export default function ConfigImageProduct() {
         if (!response.ok) throw new Error("Error al obtener el producto");
         const data = await response.json();
         setProduct(data.product);
-        setSelectedColor(data.product.colors?.[0] || "#000000");
+        setSelectedCombineColor(data.product.principalColors?.[0] || "#000000");
         setCloudImages(data.product.images || []); // Se asume que aquí vienen las URLs de Cloudinary
         setVideoUrl(data.product.videos?.[0] || null);
       } catch (error) {
@@ -58,8 +58,8 @@ export default function ConfigImageProduct() {
   if (!product) return <p>Producto no encontrado</p>;
 
   // Al cambiar de color se reinicia el índice de imagen
-  const handleColorSelect = (color: string) => {
-    setSelectedColor(color);
+  const handleCombineColorSelect = (color: string) => {
+    setSelectedCombineColor(color);
     setSelectedImage(0);
   };
 
@@ -78,7 +78,7 @@ export default function ConfigImageProduct() {
     // Enviamos el id del producto para que la ruta en Cloudinary sea:
     // products/[product.id]/[colorHex]/
     formData.append("productName", product!.id);
-    formData.append("colorHex", selectedColor.replace("#", ""));
+    formData.append("colorHex", selectedCombineColor.replace("#", ""));
     formData.append("file", file);
     try {
       const res = await fetch(`${apiUrl}/api/upload/${type}`, {
@@ -135,7 +135,7 @@ export default function ConfigImageProduct() {
   // Filtramos las imágenes de Cloudinary según el color seleccionado
   // Se espera que la URL tenga la subcarpeta del color, ejemplo: /products/[id]/5f4444/...
   const filteredImages = cloudImages.filter((url) =>
-    url.includes(`/${selectedColor.replace("#", "")}/`)
+    url.includes(`/${selectedCombineColor.replace("#", "")}/`)
   );
 
   // Función para eliminar imagen: elimina en Cloudinary y actualiza la base de datos
@@ -187,18 +187,30 @@ export default function ConfigImageProduct() {
       </h1>
 
       {/* Botones para seleccionar color */}
-      <div className="flex gap-4 items-center">
-        {product.colors?.map((color, index) => (
-          <button
-            key={index}
-            className={`w-8 h-8 rounded-full border ${
-              selectedColor === color ? "ring-2 ring-amber-500" : ""
-            }`}
-            style={{ backgroundColor: color }}
-            onClick={() => handleColorSelect(color)}
-            aria-label={`Seleccionar color ${color}`}
-          />
-        ))}
+      <div className="flex flex-wrap gap-4 justify-center items-center mt-2">
+        {product.principalColors?.map((principalColor) =>
+          product.structureColors?.map((structureColor) => {
+            const comboColor = `${principalColor.replace(
+              "#",
+              ""
+            )}${structureColor.replace("#", "")}`;
+            const isSelected = selectedCombineColor === comboColor;
+
+            return (
+              <button
+                key={comboColor}
+                className={`w-8 h-8 rounded-full border transition-all duration-200 ${
+                  isSelected ? "ring-2 ring-amber-500" : ""
+                }`}
+                style={{
+                  background: `linear-gradient(to right, ${principalColor} 50%, ${structureColor} 50%)`,
+                }}
+                onClick={() => handleCombineColorSelect(comboColor)}
+                aria-label={`Principal: ${principalColor}, Estructura: ${structureColor}`}
+              />
+            );
+          })
+        )}
       </div>
 
       {/* Sección de vista de imágenes y video */}

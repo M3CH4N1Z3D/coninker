@@ -6,39 +6,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Product } from "@/interfaces/types";
-import { Puzzle, Hand, MessageCircle, MapPin } from "lucide-react";
-import { GiColombia } from "react-icons/gi";
+import { features } from "@/lib/features";
 
 export function FeaturedProducts() {
   const [featured, setFeatured] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
-  const features = [
-    {
-      icon: <Puzzle size={32} />,
-      title: "Colaboración Creativa",
-      description:
-        "Aliados en el desarrollo de ideas junto a arquitectos, diseñadores de interiores y proyectos de hospitalidad.",
-    },
-    {
-      icon: <Hand size={32} />,
-      title: "Hecho a Mano",
-      description:
-        "Combinamos artesanía tradicional y diseño contemporáneo para ofrecer piezas únicas y auténticas.",
-    },
-    {
-      icon: <MessageCircle size={32} />,
-      title: "Atención al Cliente",
-      description:
-        "Nos comprometemos a brindar una experiencia que supera expectativas, con soluciones reales.",
-    },
-    {
-      icon: <GiColombia size={32} />,
-      title: "Marca Colombiana",
-      description:
-        "Todo lo que hacemos está fabricado en Colombia, impulsando nuestra industria con orgullo.",
-    },
-  ];
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -61,18 +34,18 @@ export function FeaturedProducts() {
     fetchFeatured();
   }, [apiUrl]);
 
-  if (isLoading || featured.length === 0) return null;
+  // if (isLoading || featured.length === 0) return null;
 
   return (
     <section id="decoracion" className="py-20 bg-[var(--fondoPrincipal)]">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center text-[var(--colorLetra)] mb-16 hover:cursor-pointer hover:text-[var(--fondoSecundario)]">
-          Asi complementamos los espacios
-          <br /> con nuestras piezas...
+          CADA OBJETO SUMA,
+          <br /> CADA DETALLE TRANSFORMA TU ESPACIO…
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featured.map((product) => (
+          {featured.map((product: Product) => (
             <Card
               key={product.id}
               className="group overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300"
@@ -99,7 +72,7 @@ export function FeaturedProducts() {
                     </div>
                     <div>
                       <p className="text-lg font-light text-[var(--colorLetra)]">
-                        ${product.price.toFixed(2)}
+                        ${product.price.toLocaleString("es-CO")}
                       </p>
                     </div>
                   </div>

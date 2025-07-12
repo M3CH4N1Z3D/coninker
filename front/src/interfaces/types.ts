@@ -5,11 +5,14 @@ export interface ProductFormData {
   price: number;
   categories: Category[];
   stock: number;
-  width: number;
-  height: number;
-  length: number;
-  weight: number;
-  colors: string[];
+  dimensions: {
+    width: number;
+    height: number;
+    length: number;
+    weight: number;
+  };
+  structureColors: string[];
+  principalColors: string[];
   isFeatured: boolean;
 }
 
@@ -30,12 +33,15 @@ export interface Product {
   stock: number;
   rating: number;
   reviewCount: number;
-  width: number;
-  height: number;
-  length: number;
-  weight: number;
-  colors?: string[];
-  selectedColor?: string;
+  materials: string[];
+  dimensions: {
+    width: number;
+    height: number;
+    length: number;
+    weight: number;
+  };
+  structureColors?: string[];
+  principalColors?: string[];
   isFeatured: boolean;
   updatedAt?: string;
 }

@@ -207,7 +207,7 @@ export default function MobiliarioPage() {
                   <div className={`${viewMode === "list" ? "flex-1" : ""}`}>
                     <h3 className="mt-2 text-sm font-medium">{product.name}</h3>
                     <p className="text-sm text-gray-500">
-                      ${product.price.toFixed(2)}
+                      ${product.price.toLocaleString("es-CO")}
                     </p>
                   </div>
                 </div>

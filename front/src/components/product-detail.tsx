@@ -29,23 +29,28 @@ export default function ProductDetail() {
   const [editedProduct, setEditedProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedColor, setSelectedColor] = useState("#000000");
+  const [selectedPrincipalColor, setSelectedPrincipalColor] =
+    useState<string>("");
+  const [selectedStructureColor, setSelectedStructureColor] =
+    useState<string>("");
+  const [selectedColorCombo, setSelectedColorCombo] = useState<string>("");
   const [colorInput, setColorInput] = useState("#000000");
+  const [showDescription, setShowDescription] = useState(false);
+  const [showMaterials, setShowMaterials] = useState(false);
+  const [showDimensions, setShowDimensions] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(false);
 
   // Constantes derivadas (se pueden definir después de los estados)
   const productVideo = `/instagram/${params.id}/videos/${params.id}.mp4`;
-  const colorImages = [...Array(4)].map(
-    (_, index) =>
-      `/instagram/${params.id}/${selectedColor.replace("#", "")}/${params.id}${
-        index + 1
-      }.webp`
+  const filteredImages = product?.images.filter((imgUrl) =>
+    imgUrl.includes(`/products/${product?.id}/${selectedColorCombo}/`)
   );
 
   // Determinar si estamos en modo admin (basado en el path)
   const isAdmin = pathname?.startsWith("/admin/productos");
 
-  // Carga de datos del producto (siempre se ejecuta, independientemente del render)
   useEffect(() => {
+    // Cargar el producto al montar el componente
     if (!params.id) return;
 
     const fetchProductData = async () => {
@@ -55,7 +60,18 @@ export default function ProductDetail() {
 
         const data = await response.json();
         setProduct(data.product);
-        setSelectedColor(data.product.colors?.[0] || "#000000");
+        setSelectedPrincipalColor(
+          data.product.principalColors?.[0] || "#000000"
+        );
+        setSelectedStructureColor(
+          data.product.structureColors?.[0] || "#000000"
+        );
+        setSelectedColorCombo(
+          `${(data.product.principalColors?.[0] || "").replace("#", "")}${(
+            data.product.structureColors?.[0] || ""
+          ).replace("#", "")}`
+        );
+
         setEditedProduct(data.product);
       } catch (error) {
         console.error("Error al cargar el producto:", error);
@@ -67,33 +83,59 @@ export default function ProductDetail() {
     fetchProductData();
   }, [params.id, apiUrl]);
 
-  // Si sigue cargándose o no se encontró el producto, renderizamos un mensaje fijo.
+  useEffect(() => {
+    // Actualizar el combo de colores seleccionado
+    if (!selectedPrincipalColor || !selectedStructureColor) return;
+    setSelectedColorCombo(
+      `${selectedPrincipalColor.replace(
+        "#",
+        ""
+      )}${selectedStructureColor.replace("#", "")}`
+    );
+    console.log(selectedColorCombo);
+  }, [selectedPrincipalColor, selectedStructureColor]);
+
   if (loading) return <p>Cargando producto...</p>;
   if (!product) return <p>Producto no encontrado</p>;
 
-  // Acciones de edición
-
-  const handleColorChange = (color: string) => {
+  const handleStructureColorChange = (color: string) => {
+    // Cambia el color de la estructura
     setEditedProduct((prev) => {
-      const colors = prev?.colors || []; // Asegúrate de que colors sea un arreglo
+      const structureColors = prev?.structureColors || [];
       return {
         ...prev!,
-        colors: colors.includes(color)
-          ? colors.filter((c) => c !== color)
-          : [...colors, color],
+        structureColors: structureColors.includes(color)
+          ? structureColors.filter((c) => c !== color)
+          : [...structureColors, color],
+      };
+    });
+  };
+
+  const handlePrincipalColorChange = (color: string) => {
+    // Cambia el color principal
+    setEditedProduct((prev) => {
+      const principalColors = prev?.principalColors || [];
+      return {
+        ...prev!,
+        principalColors: principalColors.includes(color)
+          ? principalColors.filter((c) => c !== color)
+          : [...principalColors, color],
       };
     });
   };
 
   const handleEdit = () => {
+    // Activa el modo de edición
     setIsEditing(true);
   };
 
   const handleCancelEdit = () => {
+    // Cancela la edición y restaura el producto original
     setIsEditing(false);
   };
 
   const handleSaveChanges = async () => {
+    // Guarda los cambios realizados al producto
     const authToken = localStorage.getItem("authToken");
 
     try {
@@ -127,19 +169,19 @@ export default function ProductDetail() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Maneja los cambios en los campos de entrada del producto editado
     setEditedProduct({
       ...editedProduct!,
       [e.target.name]: e.target.value,
     });
   };
 
-  // Acciones de carrito
   const handleAddToCart = () => {
+    // Añade el producto al carrito
     if (!product) return;
 
     const productWithColor: Product = {
       ...product,
-      selectedColor,
     };
 
     addToCart(productWithColor, quantity);
@@ -149,45 +191,30 @@ export default function ProductDetail() {
     });
   };
 
-  const incrementQuantity = () => setQuantity((prev) => prev + 1);
-  const decrementQuantity = () =>
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-
-  const getContrastColor = (hexColor: string) => {
-    const cleanHex = hexColor.replace("#", "");
-    const r = parseInt(cleanHex.substring(0, 2), 16);
-    const g = parseInt(cleanHex.substring(2, 4), 16);
-    const b = parseInt(cleanHex.substring(4, 6), 16);
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-    return brightness > 128 ? "#000000" : "#FFFFFF";
-  };
-
-  const textColor = getContrastColor(selectedColor);
-
   const handleBack = () => {
+    // Navega hacia atrás en el historial
     router.back();
   };
 
   return (
-    <section
-      className="py-12 inset-0 bg-black/20 transition-colors duration-1000"
-      style={{ backgroundColor: selectedColor, color: textColor }}
-    >
+    <section className="py-12 inset-0 bg-[var(--fondoPrincipal)] transition-colors duration-1000">
+      {/* Contenedor principal */}
       <div className="container mx-auto px-4">
-        <span
+        <span // Botón para volver atrás
           className="text-yellow-600 hover:underline cursor-pointer"
           onClick={handleBack}
         >
           Volver
         </span>
+        {/* Grid para imagen y detalles del producto */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Product Images */}
+          {/* Contenedor de imágenes del producto */}
           <div className="space-y-4 relative">
-            {/* Imagen o Video principal */}
+            {/* Imagen principal del producto */}
             <div className="relative aspect-square overflow-hidden bg-gray-100">
-              {selectedImage < product?.images?.length ? (
+              {filteredImages?.[selectedImage] ? (
                 <Image
-                  src={product.images[selectedImage]}
+                  src={filteredImages[selectedImage]}
                   alt={product.name || ""}
                   fill
                   className="object-cover transition-opacity duration-500 ease-in-out opacity-100"
@@ -202,10 +229,9 @@ export default function ProductDetail() {
                 </video>
               )}
             </div>
-
-            {/* Miniaturas sobre la imagen grande */}
+            {/* Contenedor de miniaturas de imágenes */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-              {product?.images?.map((image, index) => (
+              {filteredImages?.map((image, index) => (
                 <button
                   key={index}
                   className={`relative w-16 h-16 overflow-hidden bg-gray-100 rounded-lg ${
@@ -236,14 +262,10 @@ export default function ProductDetail() {
               ))}
             </div>
           </div>
-
           {/* Product Info */}
           <div className="space-y-6">
             <div>
-              <p className="text-amber-600 font-medium">
-                {product?.categories.map((cat) => cat.title).join(", ")}
-              </p>
-              <h1 className="text-3xl font-bold">
+              <h1 className="text-2xl text-gray-500">
                 {isEditing ? (
                   <input
                     type="text"
@@ -253,7 +275,7 @@ export default function ProductDetail() {
                     className="bg-white text-black"
                   />
                 ) : (
-                  product.name
+                  product.name.toUpperCase()
                 )}
               </h1>
             </div>
@@ -267,113 +289,16 @@ export default function ProductDetail() {
                   className="bg-white text-black"
                 />
               ) : (
-                `$${product.price}`
+                `$${product.price.toLocaleString("es-CO")}`
               )}
             </p>
-            <div className="prose prose-gray max-w-none">
-              <p>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="description"
-                    value={editedProduct?.description}
-                    onChange={handleChange}
-                    className="bg-white text-black"
-                  />
-                ) : (
-                  product.description
-                )}
-              </p>
-            </div>
-            <div className="prose prose-gray max-w-none">
-              <p>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="fullDescription"
-                    value={editedProduct?.fullDescription}
-                    onChange={handleChange}
-                    className="bg-white text-black"
-                  />
-                ) : (
-                  product.fullDescription
-                )}
-              </p>
-            </div>
-            {/* Dimensions */}
-            <div className="border-t border-b py-4">
-              <h3 className="font-semibold mb-2">Dimensiones:</h3>
-              <div className="grid grid-cols-3 gap-4 text-sm">
-                <div>
-                  <p>Ancho</p>
-                  <p className="font-medium">
-                    {isEditing ? (
-                      <input
-                        type="number"
-                        name="width"
-                        value={editedProduct?.width}
-                        onChange={handleChange}
-                        className="bg-white text-black"
-                      />
-                    ) : (
-                      `${product.width} cm`
-                    )}
-                  </p>
-                </div>
-                <div>
-                  <p className="font-medium">Alto</p>
-                  <p>
-                    {isEditing ? (
-                      <input
-                        type="number"
-                        name="height"
-                        value={editedProduct?.height}
-                        onChange={handleChange}
-                        className="bg-white text-black"
-                      />
-                    ) : (
-                      `${product.height} cm`
-                    )}
-                  </p>
-                </div>
-                <div>
-                  <p>Profundidad</p>
-                  <p className="font-medium">
-                    {isEditing ? (
-                      <input
-                        type="number"
-                        name="length"
-                        value={editedProduct?.length}
-                        onChange={handleChange}
-                        className="bg-white text-black"
-                      />
-                    ) : (
-                      `${product.length} cm`
-                    )}
-                  </p>
-                </div>
-                <div>
-                  <p>Peso</p>
-                  <p className="font-medium">
-                    {isEditing ? (
-                      <input
-                        type="number"
-                        name="weight"
-                        value={editedProduct?.weight}
-                        onChange={handleChange}
-                        className="bg-white text-black"
-                      />
-                    ) : (
-                      `${product.weight} kg`
-                    )}
-                  </p>
-                </div>
-              </div>
-            </div>
+
             {/* Botones para seleccionar color */}
             {isEditing ? (
               <div className="mt-4">
-                <label className="font-semibold">Colores disponibles:</label>
+                <label className="font-semibold">
+                  Colores disponibles para estructura:
+                </label>
                 <div className="flex items-center gap-2 mt-2">
                   {/* Selector de color */}
                   <input
@@ -384,16 +309,15 @@ export default function ProductDetail() {
                   />
                   <button
                     type="button"
-                    onClick={() => handleColorChange(colorInput)}
+                    onClick={() => handleStructureColorChange(colorInput)}
                     className="bg-indigo-600 text-white px-4 py-2 rounded-md"
                   >
                     Agregar Color
                   </button>
                 </div>
 
-                {/* Lista de colores seleccionados */}
                 <div className="flex flex-wrap gap-2 mt-3">
-                  {editedProduct?.colors?.map((color) => (
+                  {editedProduct?.structureColors?.map((color) => (
                     <span
                       key={color}
                       className="w-8 h-8 rounded-full flex items-center justify-center"
@@ -401,7 +325,43 @@ export default function ProductDetail() {
                     >
                       <button
                         type="button"
-                        onClick={() => handleColorChange(color)}
+                        onClick={() => handleStructureColorChange(color)}
+                        className="text-white font-bold"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+                <label className="font-semibold">
+                  Colores principales disponibles:
+                </label>
+                <div className="flex items-center gap-2 mt-2">
+                  {/* Selector de color */}
+                  <input
+                    type="color"
+                    value={colorInput}
+                    onChange={(e) => setColorInput(e.target.value)}
+                    className="w-10 h-10 border rounded-md cursor-pointer"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handlePrincipalColorChange(colorInput)}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-md"
+                  >
+                    Agregar Color
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {editedProduct?.principalColors?.map((color) => (
+                    <span
+                      key={color}
+                      className="w-8 h-8 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: color }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => handlePrincipalColorChange(color)}
                         className="text-white font-bold"
                       >
                         ×
@@ -411,20 +371,45 @@ export default function ProductDetail() {
                 </div>
               </div>
             ) : (
-              <div className="mt-4 flex gap-2">
-                {product?.colors?.map((color, index) => (
-                  <button
-                    key={index}
-                    className={`w-8 h-8 rounded-full border ${
-                      selectedColor === color ? "ring-2 ring-amber-500" : ""
-                    }`}
-                    style={{ backgroundColor: color }}
-                    onClick={() => {
-                      setSelectedColor(color);
-                      setSelectedImage(0);
-                    }}
-                  />
-                ))}
+              <div className="mt-4 flex flex-col gap-2">
+                <h2>Colores Estructuras</h2>
+                <div className="flex flex-row gap-2">
+                  {product?.structureColors?.map((color, index) => (
+                    <button
+                      key={index}
+                      className={`w-6 h-12 rounded-md border transition-all duration-200 ${
+                        selectedStructureColor === color
+                          ? "ring-2 ring-[var(--fondoSecundario)]"
+                          : ""
+                      }`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => {
+                        setSelectedStructureColor(color);
+                        setSelectedImage(0);
+                      }}
+                      aria-label={`Seleccionar color ${color}`}
+                    />
+                  ))}
+                </div>
+                <h2>Colores Madera Pino</h2>
+                <div className="flex flex-row gap-2">
+                  {product?.principalColors?.map((color, index) => (
+                    <button
+                      key={index}
+                      className={`w-12 h-6 rounded-md border transition-all duration-200 ${
+                        selectedPrincipalColor === color
+                          ? "ring-2 ring-amber-500"
+                          : ""
+                      }`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => {
+                        setSelectedPrincipalColor(color);
+
+                        setSelectedImage(0);
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             )}
             {/* Sección de acciones */}
@@ -447,7 +432,7 @@ export default function ProductDetail() {
               </div>
             ) : (
               <div className="flex flex-col space-y-4">
-                <div className="flex items-center">
+                {/*<div className="flex items-center">
                   <div className="flex items-center border rounded-md">
                     <Button
                       variant="ghost"
@@ -475,63 +460,190 @@ export default function ProductDetail() {
                       ? `Solo ${product.stock} disponibles`
                       : "Agotado"}
                   </p>
-                </div>
+                </div>*/}
                 <div className="flex gap-4">
                   <Button
-                    className="flex-1 bg-amber-600 hover:bg-amber-700 text-white"
+                    className="flex-1 bg-transparent border boder-1 hover:bg-[var(--hoverColor)] text-gray-500 hover:text-white"
                     size="lg"
                     onClick={handleAddToCart}
                     disabled={product?.stock === 0}
                   >
                     Añadir al carrito
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-md"
-                    style={{ backgroundColor: selectedColor }}
-                  >
+                  <Button variant="outline" size="icon" className="rounded-md">
                     <Share2 className="h-5 w-5" />
                   </Button>
                 </div>
               </div>
             )}
-            {!isAdmin && (
-              <div className="grid grid-cols-2 gap-4 pt-4">
-                <div className="flex items-center gap-2">
-                  <Truck className="h-5 w-5 text-amber-600" />
-                  <span className="text-sm">Envío gratis</span>
+            <div className="prose prose-gray max-w-none mt-6 border-t pt-4">
+              {(
+                [
+                  {
+                    title: "Descripción",
+                    value: product.description,
+                    editKey: "description" as const,
+                    state: showDescription,
+                    toggle: setShowDescription,
+                  },
+                  {
+                    title: "Materiales",
+                    value: product.materials,
+                    editKey: "materials" as const,
+                    state: showMaterials,
+                    toggle: setShowMaterials,
+                  },
+                  {
+                    title: "Información Importante",
+                    value: product.fullDescription,
+                    editKey: "fullDescription" as const,
+                    state: showFullDescription,
+                    toggle: setShowFullDescription,
+                  },
+                ] as {
+                  title: string;
+                  value: string;
+                  editKey: keyof Product;
+                  state: boolean;
+                  toggle: React.Dispatch<React.SetStateAction<boolean>>;
+                }[]
+              ).map(({ title, value, editKey, state, toggle }) => (
+                <div key={title} className="border-b py-4">
+                  <div
+                    className="flex h-10 items-center justify-between cursor-pointer select-none"
+                    onClick={() => toggle((prev) => !prev)}
+                  >
+                    <span className="text-lg text-gray-500">{title}</span>
+                    <button className="text-3xl text-gray-700 transition-transform duration-300">
+                      {state ? "–" : "+"}
+                    </button>
+                  </div>
+
+                  <div
+                    className={`overflow-hidden transition-all duration-500 ease-in-out mt-2 ${
+                      state ? "max-h-[1000px]" : "max-h-0"
+                    }`}
+                  >
+                    <table className="w-full table-fixed text-left mt-2">
+                      <tbody>
+                        <tr>
+                          <td className="w-32 font-medium text-gray-700">
+                            {title}
+                          </td>
+                          <td className="text-gray-800">
+                            {isEditing ? (
+                              typeof editedProduct?.[editKey] === "string" ||
+                              typeof editedProduct?.[editKey] === "number" ? (
+                                <input
+                                  type="text"
+                                  name={editKey}
+                                  value={editedProduct?.[editKey] ?? ""}
+                                  onChange={handleChange}
+                                  className="bg-white text-black w-full border p-2 rounded-md"
+                                />
+                              ) : (
+                                <span className="text-gray-500 italic">
+                                  Este campo no es editable por input.
+                                </span>
+                              )
+                            ) : (
+                              value
+                            )}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <RotateCcw className="h-5 w-5 text-amber-600" />
-                  <span className="text-sm">Devolución en 30 días</span>
+              ))}
+
+              {/* 🔧 Sección de Medidas como tabla */}
+              <div className="border-b py-4">
+                <div
+                  className="flex h-10 items-center justify-between cursor-pointer select-none"
+                  onClick={() => setShowDimensions((prev) => !prev)}
+                >
+                  <span className="text-lg text-gray-500">Medidas</span>
+                  <button className="text-3xl text-gray-700 transition-transform duration-300">
+                    {showDimensions ? "–" : "+"}
+                  </button>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-amber-600" />
-                  <span className="text-sm">Garantía de 2 años</span>
+
+                <div
+                  className={`overflow-hidden transition-all duration-500 ease-in-out mt-2 ${
+                    showDimensions ? "max-h-[1000px]" : "max-h-0"
+                  }`}
+                >
+                  {isEditing ? (
+                    <table className="w-full table-fixed text-left mt-4">
+                      <tbody className="text-gray-800">
+                        {(
+                          [
+                            "width",
+                            "height",
+                            "length",
+                            "weight",
+                          ] as (keyof Product["dimensions"])[]
+                        ).map((dim) => (
+                          <tr key={dim}>
+                            <td className="w-32 capitalize font-medium">
+                              {dim === "width"
+                                ? "Ancho"
+                                : dim === "height"
+                                ? "Alto"
+                                : dim === "length"
+                                ? "Largo"
+                                : "Peso"}{" "}
+                              {dim === "weight" ? "(kg)" : "(cm)"}
+                            </td>
+                            <td>
+                              <input
+                                type="number"
+                                name={dim}
+                                value={editedProduct?.dimensions[dim] ?? ""}
+                                onChange={(e) =>
+                                  setEditedProduct((prev) => ({
+                                    ...prev!,
+                                    dimensions: {
+                                      ...prev!.dimensions,
+                                      [dim]: Number(e.target.value),
+                                    },
+                                  }))
+                                }
+                                className="bg-white text-black w-full border p-2 rounded-md"
+                              />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <table className="w-full table-fixed text-left mt-4">
+                      <tbody className="text-gray-800">
+                        <tr>
+                          <td className="w-32 font-medium">Ancho</td>
+                          <td>{product.dimensions.width} cm</td>
+                        </tr>
+                        <tr>
+                          <td className="w-32 font-medium">Alto</td>
+                          <td>{product.dimensions.height} cm</td>
+                        </tr>
+                        <tr>
+                          <td className="w-32 font-medium">Largo</td>
+                          <td>{product.dimensions.length} cm</td>
+                        </tr>
+                        <tr>
+                          <td className="w-32 font-medium">Peso</td>
+                          <td>{product.dimensions.weight} kg</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  )}
                 </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
-      </div>
-
-      <div className="mt-16 mx-6">
-        <Tabs defaultValue="description">
-          <TabsList className="w-full justify-start border-b rounded-none bg-transparent h-auto p-0">
-            <TabsTrigger
-              value="description"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-amber-600 data-[state=active]:bg-amber-600 px-8 py-3"
-            >
-              Descripción
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="description" className="pt-6">
-            <div className="prose prose-gray max-w-none">
-              <p>{product?.fullDescription}</p>
-            </div>
-          </TabsContent>
-        </Tabs>
       </div>
     </section>
   );

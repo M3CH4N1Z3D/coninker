@@ -65,11 +65,19 @@ export function Categories() {
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <div className="absolute inset-0 bg-black opacity-60 z-10" />
 
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <h3 className="text-xl font-semibold tracking-wide text-[#7a7a7a] bg-transparent px-6 py-3 rounded-md backdrop-blur-sm uppercase">
-                          {category.title}
+                      <div className="absolute inset-0 flex items-center justify-center z-11">
+                        <h3 className="text-xl font-semibold tracking-wide text-[var(--fondoPrincipal)] bg-transparent px-6 py-3 rounded-md uppercase text-center leading-snug">
+                          {category.title.split(" ").length === 2 ? (
+                            <>
+                              {category.title.split(" ")[0]}
+                              <br />
+                              {category.title.split(" ")[1]}
+                            </>
+                          ) : (
+                            category.title
+                          )}
                         </h3>
                       </div>
                     </div>

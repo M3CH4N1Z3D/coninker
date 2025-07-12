@@ -18,9 +18,7 @@ export class ProductController {
       );
 
       // ✅ Extraer solo los IDs con una conversión segura
-      const categoryIds: string[] = productData.categories.map(
-        (category) => category.id
-      );
+      const categoryIds: string[] = productData.categories;
 
       console.log("📢 `categories` después de procesar:", categoryIds);
 
