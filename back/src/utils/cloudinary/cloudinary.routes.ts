@@ -1,15 +1,27 @@
+// routes/imageUpload.routes.ts
+
 import { Router } from "express";
-import { uploadController } from "./cloudinary.controller";
+import { imageUploadController } from "./cloudinary.controller";
+import { uploadHeroImage } from "../../middleware/storageHero";
 import { upload } from "../../middleware/storage";
 
 const router = Router();
 
-router.post("/upload/image", upload.any(), uploadController);
+// Hero
+router.post(
+  "/upload/hero",
+  uploadHeroImage.any(),
+  imageUploadController.uploadHero
+);
 
-router.post("/upload/video", upload.any(), uploadController);
+// Producto (puede aceptar múltiples archivos)
+router.post("/upload/image", upload.any(), imageUploadController.uploadProduct);
 
-// router.post("/upload/hero"), upload.any(), uploadController;
-
-router.post("/upload/category", upload.any(), uploadController);
+// Categoría (usa lógica de folder dinámico con categoryTitle en req.body)
+router.post(
+  "/upload/category",
+  upload.any(),
+  imageUploadController.uploadCategory
+);
 
 export default router;

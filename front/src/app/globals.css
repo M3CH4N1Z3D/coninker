@@ -8,6 +8,7 @@
   --font-primary: var(--font-montserrat);
   --hoverColor: #863928;
   --cartButton: #1c1c1c;
+  --colorLetraSecundaria: #aba69f;
 }
 
 @theme inline {

@@ -5,13 +5,7 @@ import { Dialog } from "@headlessui/react";
 import { Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { describe } from "node:test";
-
-interface AppImageConfig {
-  name: string;
-  key: string;
-  description: string;
-}
+import { AppImageConfig } from "@/interfaces/types";
 
 const CONFIGURABLE_IMAGES: AppImageConfig[] = [
   {
@@ -19,6 +13,16 @@ const CONFIGURABLE_IMAGES: AppImageConfig[] = [
     key: "hero",
     description:
       "Imagen principal del sitio que aparece en la sección de bienvenida.",
+    uploadEndpoint: "/api/upload/hero",
+    saveEndpoint: "/api/saveheroimage",
+  },
+  {
+    name: "Imagenes de Objetos",
+    key: "object-images",
+    description:
+      "Imágenes de los objetos que se muestran en los espacion complmentarios.",
+    uploadEndpoint: "/api/upload/object-images",
+    saveEndpoint: "/api/saveobjectimages",
   },
 ];
 
@@ -51,7 +55,7 @@ export default function ImageConfigApp() {
     try {
       setUploading(true);
 
-      const res = await fetch(`${apiUrl}/api/upload/hero`, {
+      const res = await fetch(`${apiUrl}${activeConfig.uploadEndpoint}`, {
         method: "POST",
         body: formData,
       });
@@ -59,7 +63,7 @@ export default function ImageConfigApp() {
       if (!res.ok) throw new Error("Error al subir archivo");
       const { secure_url } = await res.json();
 
-      const saveRes = await fetch(`${apiUrl}/api/saveheroimage`, {
+      const saveRes = await fetch(`${apiUrl}${activeConfig.saveEndpoint}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${authToken}`,

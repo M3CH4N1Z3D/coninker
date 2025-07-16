@@ -84,3 +84,11 @@ export interface PriceSliderProps {
   rightIcon: React.ReactNode;
   onChange?: (value: number) => void;
 }
+export interface AppImageConfig {
+  name: string;
+  key: string;
+  description: string;
+  image?: string;
+  uploadEndpoint: string;
+  saveEndpoint: string;
+}

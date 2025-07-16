@@ -42,7 +42,7 @@ export default function ConfigImageProduct() {
         if (!response.ok) throw new Error("Error al obtener el producto");
         const data = await response.json();
         setProduct(data.product);
-        setSelectedCombineColor(data.product.principalColors?.[0] || "#000000");
+        setSelectedCombineColor(data.product.principalColors?.[0]);
         setCloudImages(data.product.images || []); // Se asume que aquí vienen las URLs de Cloudinary
         setVideoUrl(data.product.videos?.[0] || null);
       } catch (error) {
@@ -134,9 +134,11 @@ export default function ConfigImageProduct() {
 
   // Filtramos las imágenes de Cloudinary según el color seleccionado
   // Se espera que la URL tenga la subcarpeta del color, ejemplo: /products/[id]/5f4444/...
-  const filteredImages = cloudImages.filter((url) =>
-    url.includes(`/${selectedCombineColor.replace("#", "")}/`)
-  );
+  const filteredImages = selectedCombineColor
+    ? cloudImages.filter((url) =>
+        url.includes(`/${selectedCombineColor.replace("#", "")}/`)
+      )
+    : [];
 
   // Función para eliminar imagen: elimina en Cloudinary y actualiza la base de datos
   const handleDeleteImage = async (url: string) => {

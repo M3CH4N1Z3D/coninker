@@ -3,18 +3,16 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../utils/cloudinary/cloudinary";
 
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: async (req: any, file: any) => {
-    const folder = `App/hero`;
-    const resource_type = file.mimetype.startsWith("video") ? "video" : "image";
-
+  cloudinary,
+  params: async (req, file) => {
+    console.log("Uploading hero image with params:", req.body, "file:", file);
     return {
-      folder,
-      format: resource_type === "image" ? "webp" : undefined,
-      resource_type,
-      transformation: [{ width: 800, height: 800, crop: "limit" }],
+      folder: "app/hero",
+      format: "png",
+      resource_type: "image",
+      transformation: [{ width: 2793, height: 1024, crop: "limit" }],
     };
   },
-} as any);
+});
 
-export const upload = multer({ storage });
+export const uploadHeroImage = multer({ storage }); // ✅ el campo es "file"

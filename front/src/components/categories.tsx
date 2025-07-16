@@ -65,10 +65,10 @@ export function Categories() {
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-black opacity-60 z-10" />
+                      <div className="absolute inset-0 bg-black opacity-40 z-10" />
 
                       <div className="absolute inset-0 flex items-center justify-center z-11">
-                        <h3 className="text-xl font-semibold tracking-wide text-[var(--fondoPrincipal)] bg-transparent px-6 py-3 rounded-md uppercase text-center leading-snug">
+                        <h3 className="text-xl font-bold tracking-wide text-[var(--colorLetraSecundaria)] bg-transparent px-6 py-3 rounded-md uppercase text-center leading-snug">
                           {category.title.split(" ").length === 2 ? (
                             <>
                               {category.title.split(" ")[0]}

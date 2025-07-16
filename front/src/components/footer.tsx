@@ -40,17 +40,13 @@ export function Footer() {
         <div className="mb-8">
           <div className="flex justify-center mb-3">
             <Image
-              src="/logo.webp"
+              src="/logo.png"
               alt="Logo Cóninker"
               width={150}
               height={150}
               priority
             />
           </div>
-
-          <p className="text-sm text-[var(--colorLetra)] font-bold mt-1">
-            Muebles manualmente coloridos.
-          </p>
         </div>
 
         {/* Íconos sociales */}
@@ -61,7 +57,7 @@ export function Footer() {
             rel="noopener noreferrer"
             className="hover:text-[var(--hoverColor)] transition-colors"
           >
-            <BsWhatsapp size={24} />
+            <BsWhatsapp size={28} />
           </Link>
           <Link
             href="https://instagram.com/tu_usuario"
@@ -69,7 +65,7 @@ export function Footer() {
             rel="noopener noreferrer"
             className="hover:text-[var(--hoverColor)] transition-colors"
           >
-            <AiOutlineInstagram size={24} />
+            <AiOutlineInstagram size={32} />
           </Link>
         </div>
 

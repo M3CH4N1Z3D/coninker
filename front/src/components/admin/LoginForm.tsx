@@ -106,7 +106,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={isLoading || !email || !password}
-        className={`w-full py-2 px-4 rounded-md text-white ${
+        className={`w-full py-2 px-4 hover:cursor-pointer rounded-md text-white ${
           isLoading || !email || !password
             ? "bg-gray-400"
             : "bg-indigo-600 hover:bg-indigo-700"

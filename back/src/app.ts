@@ -9,6 +9,7 @@ import adminRoutes from "../src/modules/admins/admin.routes";
 import productRoutes from "./modules/products/product.routes";
 import uploadRoutes from "./utils/cloudinary/cloudinary.routes";
 import categoryRoutes from "./modules/categories/category.routes";
+import configImagesRoutes from "./modules/heroImage/heroImage.routes";
 
 // Import database initializer (optional here, depends on strategy)
 // import { initializeDatabase } from "./database/data-source";
@@ -60,7 +61,7 @@ app.use("/api/admins", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api", uploadRoutes);
 app.use("/api/categories", categoryRoutes);
-
+app.use("/api", configImagesRoutes);
 // --- Global Error Handler ---
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use(
@@ -77,11 +78,14 @@ app.use(
 
     console.error(`[${status}] ${message}`, details || err.stack); // Log more details
 
-    const responseBody: { status: string; message: string; details?: unknown } =
-      {
-        status: "error",
-        message,
-      };
+    const responseBody: {
+      status: string;
+      message: string;
+      details?: unknown;
+    } = {
+      status: "error",
+      message,
+    };
 
     if (details !== undefined) {
       responseBody.details = details;
