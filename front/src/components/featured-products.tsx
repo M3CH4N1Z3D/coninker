@@ -4,6 +4,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { Card, CardContent } from "./ui/card";
+import {
+  ChevronLeft,
+  ChevronLeftCircle,
+  ChevronLeftCircleIcon,
+  ChevronRightCircle,
+  ChevronRightCircleIcon,
+} from "lucide-react";
+import { FaChevronRight } from "react-icons/fa";
+import { features } from "@/lib/features";
 
 export function FeaturedProducts() {
   const [scenes, setScenes] = useState<any[]>([]);
@@ -40,50 +50,93 @@ export function FeaturedProducts() {
 
   return (
     <section id="decoracion" className="py-20 bg-[var(--fondoPrincipal)]">
-      <div className="container mx-auto px-4 relative min-h-[32rem]">
+      <div className="container flex flex-col items-center mx-auto px-4 relative min-h-[32rem] gap-12">
         <h2 className="text-4xl font-bold text-center text-[var(--colorLetra)] mb-16 hover:cursor-pointer hover:text-[var(--fondoSecundario)]">
           CADA OBJETO SUMA,
           <br /> CADA DETALLE TRANSFORMA TU ESPACIO…
         </h2>
 
-        <div className="flex flex-col lg:flex-row items-center justify-center gap-12">
+        <div className="flex flex-row bg-[#d4d9d7] w-[80%] h-[33%] items-center justify-center gap-12">
           {/* Imagen decorativa */}
-          <div className="relative w-full lg:w-2/3 h-96 rounded-xl overflow-hidden shadow-md">
+          <div className="relative flex items-left border border-red mx-4 justify-center w-[50%] rounded-sm overflow-hidden">
             <Image
               src={current.image}
               alt="Escena decorativa"
-              fill
-              className="object-cover"
+              width={500}
+              height={500}
+              className="object-cover rounded-lg w-full"
             />
           </div>
 
           {/* Producto relacionado */}
-          <div className="w-full lg:w-1/3 bg-[#d4d9d7] rounded-xl p-6 text-center shadow-md">
-            <h3 className="text-2xl font-bold text-[var(--colorLetra)] mb-2">
-              {current.product.name}
-            </h3>
-            <p className="text-lg text-[var(--colorLetra)] mb-4">
-              ${current.product.price.toLocaleString("es-CO")}
-            </p>
-            <Link href={`/producto/${current.product.id}`}>
-              <Button className="bg-[var(--colorLetra)] text-white hover:bg-[var(--hoverColor)]">
-                VER PRODUCTO
-              </Button>
-            </Link>
-          </div>
+          <Card
+            key={current.product.id}
+            className="group overflow-hidden w-[50%] p-4 border-0 hover:shadow-xl transition-all duration-300"
+          >
+            <CardContent className="p-0">
+              <Link href={`/producto/${current.product.id}`}>
+                <div className="relative h-64 w-full">
+                  <Image
+                    src={current.product.images?.[1] || "/placeholder.svg"}
+                    alt={current.product.name || ""}
+                    fill
+                    className="flex items-center justify-center mx-auto object-cover group-hover:scale-105 transition-transform duration-500 rounded-lg w-full h-full"
+                  />
+                </div>
+              </Link>
+              <div className="p-6 bg-[#d4d9d7]">
+                <div className="flex flex-col justify-center items-center mb-2">
+                  <div>
+                    <Link href={`/producto/${current.product.id}`}>
+                      <h3 className="text-lg font-bold text-[var(--colorLetra)] hover:text-[var(--hoverColor)] transition-colors">
+                        {current.product.name}
+                      </h3>
+                    </Link>
+                  </div>
+                  <div>
+                    <p className="text-lg font-light text-[var(--colorLetra)]">
+                      ${current.product.price.toLocaleString("es-CO")}
+                    </p>
+                  </div>
+                </div>
+                <Link href={`/producto/${current.product.id}`}>
+                  <Button className="border-1 border-[var(--colorLetra)] w-full mt-4 bg-[#d4d9d7] hover:bg-[var(--hoverColor)] text-[var(--colorLetra)] hover:text-[#d4d9d7]">
+                    VER PRODUCTO
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Botones navegación */}
-        <div className="absolute top-1/2 left-4 transform -translate-y-1/2 z-20">
-          <Button variant="ghost" onClick={prev} className="text-xl px-2">
-            ◀
+        <div className="absolute left-20 transform -translate-y-[-21.7rem] z-20">
+          <Button
+            variant="ghost"
+            onClick={prev}
+            className="text-xl px-2 text-gray-400 hover:text-[var(--hoverColor)] hover:cursor-pointer"
+          >
+            <ChevronLeftCircleIcon size={32} />
           </Button>
         </div>
-        <div className="absolute top-1/2 right-4 transform -translate-y-1/2 z-20">
-          <Button variant="ghost" onClick={next} className="text-xl px-2">
-            ▶
+        <div className="absolute right-20 transform -translate-y-[-21.7rem] z-20">
+          <Button
+            variant="ghost"
+            onClick={next}
+            className="text-xl px-2 text-gray-400 hover:text-[var(--hoverColor)] hover:cursor-pointer"
+          >
+            <ChevronRightCircleIcon size={32} />
           </Button>
         </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 bg-[var(--colorLetraSecundaria)] p-8 md:grid-cols-4 gap-8 text-center m-8">
+        {features.map((feature) => (
+          <div key={feature.title} className="flex flex-col items-center px-4">
+            <span className="text-4xl mb-4">{feature.icon}</span>
+            <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+            <p className="text-sm leading-relaxed">{feature.description}</p>
+          </div>
+        ))}
       </div>
     </section>
   );
