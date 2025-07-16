@@ -66,6 +66,27 @@ export class ImageUploadController {
       });
     }
   }
+
+  uploadObjectsImages(req: Request, res: Response): void {
+    try {
+      const files = req.files as Express.Multer.File[];
+      if (!files || files.length === 0) {
+        res.status(400).json({ message: "No se subieron imágenes de objetos" });
+        return;
+      }
+
+      const secureUrls = files.map((file) => file.path);
+      res.status(200).json({
+        message: "Imágenes de objetos subidas exitosamente",
+        secure_urls: secureUrls,
+      });
+    } catch (error) {
+      console.error("Error al subir imágenes de objetos:", error);
+      res.status(500).json({
+        message: error instanceof Error ? error.message : "Error interno",
+      });
+    }
+  }
 }
 
 export const imageUploadController = new ImageUploadController();

@@ -11,7 +11,7 @@ export function Hero() {
   useEffect(() => {
     const fetchHeroImage = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/heroimages`);
+        const response = await fetch(`${apiUrl}/api/images/hero`);
         if (!response.ok)
           throw new Error("Error al obtener la imagen del hero");
 

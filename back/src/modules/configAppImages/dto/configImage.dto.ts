@@ -1,4 +1,4 @@
-export interface UploadHeroImageDto {
+export interface UploadAppImageDto {
   name: string;
   key: string;
   description: string;

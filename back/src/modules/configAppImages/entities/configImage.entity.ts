@@ -4,6 +4,8 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
+  ManyToOne,
 } from "typeorm";
 import { Product } from "../../products/entities/product.entity";
 
@@ -23,6 +25,13 @@ export class ConfigImage {
 
   @Column({ type: "varchar", length: 1024, nullable: true })
   image!: string;
+
+  @ManyToOne(() => Product, { nullable: true }) // 👈 relación opcional
+  @JoinColumn({ name: "product_id" })
+  product?: Product;
+
+  @Column({ type: "int", nullable: true })
+  order?: number;
 
   @CreateDateColumn({ type: "timestamp with time zone" })
   created_at!: Date;

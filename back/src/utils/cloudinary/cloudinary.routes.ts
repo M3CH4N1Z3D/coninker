@@ -4,6 +4,7 @@ import { Router } from "express";
 import { imageUploadController } from "./cloudinary.controller";
 import { uploadHeroImage } from "../../middleware/storageHero";
 import { upload } from "../../middleware/storage";
+import { uploadObjectsImage } from "../../middleware/storageObjectsImages";
 
 const router = Router();
 
@@ -23,5 +24,9 @@ router.post(
   upload.any(),
   imageUploadController.uploadCategory
 );
-
+router.post(
+  "/upload/object-images",
+  uploadObjectsImage.any(),
+  imageUploadController.uploadObjectsImages
+);
 export default router;

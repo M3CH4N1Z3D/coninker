@@ -9,7 +9,7 @@ import adminRoutes from "../src/modules/admins/admin.routes";
 import productRoutes from "./modules/products/product.routes";
 import uploadRoutes from "./utils/cloudinary/cloudinary.routes";
 import categoryRoutes from "./modules/categories/category.routes";
-import configImagesRoutes from "./modules/heroImage/heroImage.routes";
+import configImagesRoutes from "./modules/configAppImages/configAppImage.routes";
 
 // Import database initializer (optional here, depends on strategy)
 // import { initializeDatabase } from "./database/data-source";
