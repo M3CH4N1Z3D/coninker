@@ -46,6 +46,16 @@ export interface Product {
   updatedAt?: string;
 }
 
+export interface ProductCheckOut {
+  id?: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  structureColor: string;
+  principalColor: string;
+}
+
 export interface Category {
   id: string;
   title: string;

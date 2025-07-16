@@ -7,11 +7,12 @@ export const features = [
         alt="Colaboracion Creativa"
         width={80}
         height={80}
+        className="bg-transparent"
       />
     ),
     title: "Colaboración Creativa",
     description:
-      "Aliados en el desarrollo de ideas junto a arquitectos, diseñadores de interiores y proyectos de hospitalidad.",
+      "Escuchamos las necesidades de cada cliente y las conectamos con nuestras ideas y propuestas para crear piezas únicas que respondan a cada espacio. ",
   },
   {
     icon: (
@@ -24,7 +25,7 @@ export const features = [
     ),
     title: "Hecho a Mano",
     description:
-      "Combinamos artesanía tradicional y diseño contemporáneo para ofrecer piezas únicas y auténticas.",
+      "Combinamos formas orgánicas, colores vibrantes y materiales colombianos para dar vida a piezas artesanales llenas de carácter y autenticidad.",
   },
   {
     icon: (
@@ -37,7 +38,7 @@ export const features = [
     ),
     title: "Atención al Cliente",
     description:
-      "Nos comprometemos a brindar una experiencia que supera expectativas, con soluciones reales.",
+      "Ofrecemos atención personalizada para lograr una paleta de color y diseño que complemente de forma armónica cada ambiente.",
   },
   {
     icon: (
@@ -50,6 +51,6 @@ export const features = [
     ),
     title: "Marca Colombiana",
     description:
-      "Todo lo que hacemos está fabricado en Colombia, impulsando nuestra industria con orgullo.",
+      "Diseñamos y fabricamos en Colombia, impulsando el talento local y destacando lo mejor de nuestra identidad en cada mueble.",
   },
 ];

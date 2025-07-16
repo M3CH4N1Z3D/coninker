@@ -11,7 +11,7 @@ import shippingRates from "@/lib/shippingRates";
 
 export function CartPage() {
   const { cart, updateQuantity, removeFromCart, getTotalPrice } = useCart();
-  const [couponCode, setCouponCode] = useState("");
+  // const [couponCode, setCouponCode] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
 
   const subtotal = getTotalPrice();
@@ -47,9 +47,10 @@ export function CartPage() {
                 <thead>
                   <tr className="border-b">
                     <th className="text-left pb-4">Producto</th>
+                    <th className="text-center pb-4">Colores</th>
                     <th className="text-center pb-4">Cantidad</th>
-                    <th className="text-right pb-4">Precio</th>
-                    <th className="text-right pb-4">Total</th>
+                    <th className="text-center pb-4">Precio</th>
+                    <th className="text-center pb-4">Total</th>
                     <th className="pb-4"></th>
                   </tr>
                 </thead>
@@ -61,7 +62,7 @@ export function CartPage() {
                           <div className="relative w-16 h-16 mr-4 bg-gray-100">
                             <Image
                               src={
-                                item.product.images[0] ||
+                                item.product.image ||
                                 "/placeholder.svg?height=100&width=100"
                               }
                               alt={item.product.name}
@@ -76,6 +77,28 @@ export function CartPage() {
                             >
                               {item.product.name}
                             </Link>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="flex flex-col">
+                          <div className="flex">
+                            <h2>Color Madera: </h2>
+                            <span
+                              className="w-4 h-4 rounded-full border border-gray-300"
+                              style={{
+                                backgroundColor: item.product.principalColor,
+                              }}
+                            />
+                          </div>
+                          <div className="flex">
+                            <h2>Color Estructura: </h2>
+                            <span
+                              className="w-4 h-4 rounded-full border border-gray-300"
+                              style={{
+                                backgroundColor: item.product.structureColor,
+                              }}
+                            />
                           </div>
                         </div>
                       </td>
@@ -108,10 +131,13 @@ export function CartPage() {
                         </div>
                       </td>
                       <td className="py-4 text-right">
-                        ${item.product.price.toFixed(2)}
+                        ${item.product.price.toLocaleString("es-CO")}
                       </td>
                       <td className="py-4 text-right font-medium">
-                        ${(item.product.price * item.quantity).toFixed(2)}
+                        $
+                        {(item.product.price * item.quantity).toLocaleString(
+                          "es-CO"
+                        )}
                       </td>
                       <td className="py-4 text-right">
                         <Button
@@ -152,16 +178,12 @@ export function CartPage() {
                     <span className="text-gray-700 font-medium">
                       {item.product.name}
                     </span>
-                    <span className="flex items-center space-x-2">
-                      <span className="text-gray-500">Color:</span>
-                      <span
-                        className="w-4 h-4 rounded-full border border-gray-300"
-                        style={{ backgroundColor: item.product.selectedColor }}
-                      ></span>
-                    </span>
 
                     <span className="text-gray-900 font-semibold">
-                      ${(item.product.price * item.quantity).toFixed(2)}
+                      $
+                      {(item.product.price * item.quantity).toLocaleString(
+                        "es-CO"
+                      )}
                     </span>
                   </div>
                 ))}
@@ -170,7 +192,7 @@ export function CartPage() {
               <div className="border-t pt-3 mt-3">
                 <div className="flex justify-between font-semibold">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>${total.toLocaleString("es-CO")}</span>
                 </div>
               </div>
             </div>

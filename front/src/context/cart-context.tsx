@@ -7,16 +7,16 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
-import type { Product } from "@/lib/types";
+import { ProductCheckOut } from "@/interfaces/types";
 
 interface CartItem {
-  product: Product;
+  product: ProductCheckOut;
   quantity: number;
 }
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: Product, quantity: number) => void;
+  addToCart: (product: ProductCheckOut, quantity: number) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -45,7 +45,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (product: Product, quantity: number) => {
+  const addToCart = (product: ProductCheckOut, quantity: number) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find(
         (item) => item.product.id === product.id

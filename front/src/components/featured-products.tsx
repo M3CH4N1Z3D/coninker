@@ -132,7 +132,7 @@ export function FeaturedProducts() {
       <div className="grid grid-cols-1 sm:grid-cols-2 bg-[var(--colorLetraSecundaria)] p-8 md:grid-cols-4 gap-8 text-center m-8">
         {features.map((feature) => (
           <div key={feature.title} className="flex flex-col items-center px-4">
-            <span className="text-4xl mb-4">{feature.icon}</span>
+            <span className="text-4xl mb-4 bg-transparent">{feature.icon}</span>
             <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
             <p className="text-sm leading-relaxed">{feature.description}</p>
           </div>

@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { useCart } from "@/context/cart-context";
 import { Minus, Plus, Share2, Truck, RotateCcw, Check } from "lucide-react";
-import { Product } from "@/interfaces/types";
+import { Product, ProductCheckOut } from "@/interfaces/types";
 
 export default function ProductDetail() {
   // Llamadas a Hooks de navegación (no deben depender de condiciones)
@@ -180,14 +180,21 @@ export default function ProductDetail() {
     // Añade el producto al carrito
     if (!product) return;
 
-    const productWithColor: Product = {
-      ...product,
+    const productCheckOut: ProductCheckOut = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: quantity,
+      principalColor: selectedPrincipalColor,
+      structureColor: selectedStructureColor,
+      image: product.images[0],
     };
 
-    addToCart(productWithColor, quantity);
+    addToCart(productCheckOut, quantity);
     toast({
       title: "Producto añadido",
       description: `${product.name} se ha añadido a tu carrito`,
+      variant: "default",
     });
   };
 

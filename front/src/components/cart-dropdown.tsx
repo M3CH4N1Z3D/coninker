@@ -4,13 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useCart } from "@/context/cart-context";
 import { ShoppingBag, Trash2, X } from "lucide-react";
 
@@ -32,7 +25,7 @@ export function CartDropdown() {
       >
         <ShoppingBag className="h-8 w-8" />
         {totalItems > 0 && (
-          <span className="absolute -top-1 -right-1 bg-[#1c1c1c] text-white text-xs w-8 h-8 rounded-full flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 bg-[#1c1c1c] text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
             {totalItems}
           </span>
         )}
@@ -75,7 +68,7 @@ export function CartDropdown() {
               >
                 <div className="relative w-12 h-12 bg-gray-100 mr-3 flex-shrink-0">
                   <Image
-                    src={item.product.images[0] || "/placeholder.svg"}
+                    src={item.product.image || "/placeholder.svg"}
                     alt={item.product.name}
                     fill
                     className="object-cover"
