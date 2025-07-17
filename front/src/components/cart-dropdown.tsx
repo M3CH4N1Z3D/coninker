@@ -63,7 +63,7 @@ export function CartDropdown() {
           ) : (
             cart.map((item) => (
               <div
-                key={item.product.id}
+                key={item.product.variantId}
                 className="flex items-center mb-4 overflow-y-auto"
               >
                 <div className="relative w-12 h-12 bg-gray-100 mr-3 flex-shrink-0">
@@ -98,7 +98,9 @@ export function CartDropdown() {
         <div className="p-4 border-t border-[var(--colorLetra)] text-[var(--colorLetra)]">
           <div className="flex justify-between mb-4">
             <span className="font-medium">Subtotal:</span>
-            <span className="font-semibold">${subtotal.toFixed(2)}</span>
+            <span className="font-semibold">
+              ${subtotal.toLocaleString("es-CO")}
+            </span>
           </div>
           <div className="flex flex-col gap-2">
             <Link href="/carrito" onClick={() => setIsOpen(false)}>

@@ -13,10 +13,15 @@ import { ShippingRate } from "@/interfaces/types";
 export function CartPage() {
   const { cart, updateQuantity, removeFromCart, getTotalPrice } = useCart();
   // const [couponCode, setCouponCode] = useState("");
+  const [selectedCity, setSelectedCity] = useState<ShippingRate>({
+    city: "",
+    price: 0,
+  });
 
   const subtotal = getTotalPrice();
+  const shipping = selectedCity.price;
   const tax = subtotal * 0; // 16% tax
-  const total = subtotal + tax;
+  const total = subtotal + shipping + tax;
 
   if (cart.length === 0) {
     return (
@@ -157,6 +162,36 @@ export function CartPage() {
                   ))}
                 </tbody>
               </table>
+              <div className="mt-6">
+                <label
+                  htmlFor="city"
+                  className="block mb-2 text-sm font-medium text-gray-700"
+                >
+                  Elige ciudad destino:
+                </label>
+                <select
+                  id="city"
+                  value={selectedCity.city}
+                  onChange={(e) => {
+                    const selected = shippingRates.find(
+                      (rate) => rate.city === e.target.value
+                    );
+                    if (selected) {
+                      setSelectedCity(selected);
+                    } else {
+                      setSelectedCity({ city: "", price: 0 });
+                    }
+                  }}
+                  className="w-full sm:w-64 border border-gray-300 rounded px-3 py-2 text-sm"
+                >
+                  <option value="">-- Selecciona una ciudad --</option>
+                  {shippingRates.map((rate) => (
+                    <option key={rate.city} value={rate.city}>
+                      {rate.city}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
@@ -198,7 +233,10 @@ export function CartPage() {
                   <span>Subtotal</span>
                   <span>${subtotal.toLocaleString("es-CO")}</span>
                 </div>
-
+                <div className="flex justify-between text-sm text-gray-700">
+                  <span>Valor de envío</span>
+                  <span>${shipping.toLocaleString("es-CO")}</span>
+                </div>
                 <div className="flex justify-between font-semibold mt-2">
                   <span>Total</span>
                   <span>${total.toLocaleString("es-CO")}</span>

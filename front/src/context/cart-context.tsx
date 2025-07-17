@@ -48,12 +48,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const addToCart = (product: ProductCheckOut, quantity: number) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find(
-        (item) => item.product.id === product.id
+        (item) => item.product.variantId === product.variantId
       );
 
       if (existingItem) {
         return prevCart.map((item) =>
-          item.product.id === product.id
+          item.product.variantId === product.variantId
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );

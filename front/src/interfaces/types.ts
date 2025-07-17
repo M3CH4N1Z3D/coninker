@@ -47,13 +47,14 @@ export interface Product {
 }
 
 export interface ProductCheckOut {
-  id?: string;
+  id: string;
   name: string;
   price: number;
   quantity: number;
   image: string;
   structureColor: string;
   principalColor: string;
+  variantId: string;
 }
 
 export interface Category {
@@ -101,4 +102,9 @@ export interface AppImageConfig {
   image?: string;
   uploadEndpoint: string;
   saveEndpoint: string;
+}
+
+export interface ShippingRate {
+  city: string;
+  price: number;
 }

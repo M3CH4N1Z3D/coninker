@@ -14,8 +14,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useCart } from "@/context/cart-context";
 import { CreditCard, Truck, MapPin } from "lucide-react";
-import { ShippingRate } from "@/interfaces/types";
-import shippingRates from "@/lib/shippingRates";
 
 export function CheckoutPage() {
   const router = useRouter();
@@ -23,13 +21,9 @@ export function CheckoutPage() {
   const { toast } = useToast();
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedCity, setSelectedCity] = useState<ShippingRate>({
-    city: "",
-    price: 0,
-  });
 
   const subtotal = getTotalPrice();
-  const shipping = selectedCity.price;
+  const shipping = subtotal > 0 ? 0 : 0;
   const tax = subtotal * 0.0;
   const total = subtotal + shipping + tax;
 
@@ -101,31 +95,8 @@ export function CheckoutPage() {
                   <Input id="address" required className="mt-1" />
                 </div>
                 <div>
-                  <Label htmlFor="city" className="block mt-1 mb-[0.62rem]">
-                    Ciudad:
-                  </Label>
-                  <select
-                    id="city"
-                    value={selectedCity.city}
-                    onChange={(e) => {
-                      const selected = shippingRates.find(
-                        (rate) => rate.city === e.target.value
-                      );
-                      if (selected) {
-                        setSelectedCity(selected);
-                      } else {
-                        setSelectedCity({ city: "", price: 0 });
-                      }
-                    }}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                  >
-                    <option value="">-- Selecciona una ciudad --</option>
-                    {shippingRates.map((rate) => (
-                      <option key={rate.city} value={rate.city}>
-                        {rate.city}
-                      </option>
-                    ))}
-                  </select>
+                  <Label htmlFor="city">Ciudad</Label>
+                  <Input id="city" required className="mt-1" />
                 </div>
                 <div>
                   <Label htmlFor="postalCode">Código Postal</Label>
@@ -138,7 +109,36 @@ export function CheckoutPage() {
               </div>
             </div>
 
-            {/* <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-4 flex items-center">
+                <Truck className="mr-2 h-5 w-5 text-amber-600" /> Método de
+                envío
+              </h2>
+              <RadioGroup defaultValue="standard" className="space-y-3">
+                <div className="flex items-center space-x-2 border p-3 rounded-md">
+                  <RadioGroupItem value="standard" id="standard" />
+                  <Label htmlFor="standard" className="flex-1 cursor-pointer">
+                    <div className="font-medium">Envío estándar (Gratis)</div>
+                    <div className="text-sm text-gray-500">
+                      Entrega en 3-5 días hábiles
+                    </div>
+                  </Label>
+                  <div className="font-semibold">$0.00</div>
+                </div>
+                <div className="flex items-center space-x-2 border p-3 rounded-md">
+                  <RadioGroupItem value="express" id="express" />
+                  <Label htmlFor="express" className="flex-1 cursor-pointer">
+                    <div className="font-medium">Envío express</div>
+                    <div className="text-sm text-gray-500">
+                      Entrega en 1-2 días hábiles
+                    </div>
+                  </Label>
+                  <div className="font-semibold">$9.99</div>
+                </div>
+              </RadioGroup>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4 flex items-center">
                 <CreditCard className="mr-2 h-5 w-5 text-amber-600" /> Método de
                 pago
@@ -212,7 +212,7 @@ export function CheckoutPage() {
                   <div className="w-16 h-5 bg-blue-500 rounded"></div>
                 </div>
               </RadioGroup>
-            </div> */}
+            </div>
 
             <Button
               type="submit"
@@ -226,7 +226,7 @@ export function CheckoutPage() {
 
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-md p-6 sticky top-6">
-            <h2 className="text-lg font-semibold mb-4">Pagar</h2>
+            <h2 className="text-lg font-semibold mb-4">Resumen del pedido</h2>
 
             <div className="max-h-80 overflow-y-auto mb-4">
               {cart.map((item) => (

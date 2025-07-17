@@ -58,7 +58,7 @@ export function FeaturedProducts() {
 
         <div className="flex flex-row bg-[#d4d9d7] w-[80%] h-[33%] items-center justify-center gap-12">
           {/* Imagen decorativa */}
-          <div className="relative flex items-left border border-red mx-4 justify-center w-[50%] rounded-sm overflow-hidden">
+          <div className="relative flex items-left mx-4 justify-center w-[50%] rounded-sm overflow-hidden">
             <Image
               src={current.image}
               alt="Escena decorativa"
