@@ -17,8 +17,8 @@ interface CartItem {
 interface CartContextType {
   cart: CartItem[];
   addToCart: (product: ProductCheckOut, quantity: number) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeFromCart: (variantId: string) => void;
+  updateQuantity: (variantId: string, quantity: number) => void;
   clearCart: () => void;
   getTotalPrice: () => number;
 }
@@ -63,16 +63,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const removeFromCart = (productId: string) => {
+  const removeFromCart = (variantId: string) => {
     setCart((prevCart) =>
-      prevCart.filter((item) => item.product.id !== productId)
+      prevCart.filter((item) => item.product.variantId !== variantId)
     );
   };
 
-  const updateQuantity = (productId: string, quantity: number) => {
+  const updateQuantity = (variantId: string, quantity: number) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item
+        item.product.variantId === variantId ? { ...item, quantity } : item
       )
     );
   };

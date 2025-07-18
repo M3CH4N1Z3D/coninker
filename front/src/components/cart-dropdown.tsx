@@ -86,7 +86,7 @@ export function CartDropdown() {
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 text-gray-500 hover:text-gray-800 hover:cursor-pointer"
-                  onClick={() => removeFromCart(item.product.id)}
+                  onClick={() => removeFromCart(item.product.variantId)}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

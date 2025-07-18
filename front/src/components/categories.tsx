@@ -43,7 +43,7 @@ export function Categories() {
   const landingCategories = extractLandingCategories(categories);
 
   return (
-    <section id="mobiliario" className="py-20 bg-[var(--fondoPrincipal)]">
+    <section id="mobiliario" className="bg-[var(--fondoPrincipal)]">
       <div className="container mx-auto px-4">
         {isLoading ? (
           <p className="text-sm text-gray-500">Cargando categorías...</p>
@@ -65,10 +65,10 @@ export function Categories() {
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-black opacity-40 z-10" />
+                      <div className="absolute inset-0 bg-black opacity-50 z-10" />
 
                       <div className="absolute inset-0 flex items-center justify-center z-11">
-                        <h3 className="text-xl font-bold tracking-wide text-[var(--colorLetraSecundaria)] bg-transparent px-6 py-3 rounded-md uppercase text-center leading-snug">
+                        <h3 className="text-xl font-bold tracking-wide text-[var(--fondoPrincipal)] bg-transparent px-6 py-3 rounded-md uppercase text-center leading-snug">
                           {category.title.split(" ").length === 2 ? (
                             <>
                               {category.title.split(" ")[0]}

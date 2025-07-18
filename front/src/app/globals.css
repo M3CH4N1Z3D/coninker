@@ -41,6 +41,36 @@ body {
   }
 }
 
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.toast-leaving {
+  animation: fadeOut 0.3s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.toast-enter {
+  animation: fadeIn 0.3s ease-out;
+}
+
 .hero-bounce {
   animation: subtle-bounce 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }

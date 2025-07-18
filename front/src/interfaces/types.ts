@@ -105,6 +105,7 @@ export interface AppImageConfig {
 }
 
 export interface ShippingRate {
-  city: string;
+  departamento: string;
   price: number;
+  municipio: string;
 }
