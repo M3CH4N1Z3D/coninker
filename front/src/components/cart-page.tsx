@@ -9,7 +9,6 @@ import { useCart } from "@/context/cart-context";
 import { Trash2, Plus, Minus, ArrowRight, MapPin } from "lucide-react";
 import { shippingRates } from "@/lib/shippingRates";
 import { useToast } from "./ui/use-toast";
-import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -38,11 +37,9 @@ export function CartPage() {
   });
   const [formValid, setFormValid] = useState(false);
 
-  const router = useRouter();
-
   const subtotal = getTotalPrice();
   const shipping = selectedCity.price;
-  const tax = subtotal * 0; // 16% tax
+  const tax = subtotal * 0;
   const total = subtotal + tax + shipping;
 
   const municipiosFiltrados = shippingRates.filter(
@@ -65,18 +62,70 @@ export function CartPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    const orderData = {
+      nombre: formData.firstName,
+      apellido: formData.lastName,
+      telefono: formData.phone,
+      email: formData.email,
+      direccion: formData.address,
+      municipio: formData.municipio,
+      departamento: selectedDepartamento,
+      total,
+      productos: cart.map((item) => ({
+        id: item.product.id,
+        name: item.product.name,
+        price: item.product.price,
+        quantity: item.quantity,
+        image: item.product.image,
+        structureColor: item.product.structureColor,
+        principalColor: item.product.principalColor,
+        variantId: item.product.variantId,
+      })),
+    };
 
-    toast({
-      title: "¡Pedido realizado con éxito!",
-      description:
-        "Recibirás un correo electrónico con los detalles de tu compra.",
-    });
+    try {
+      const response = await fetch("/api/create-payu-html", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderData,
+        }),
+      });
 
-    clearCart();
-    router.push("/checkout/confirmacion");
-    setIsSubmitting(false);
+      if (!response.ok) {
+        throw new Error("Error al generar el formulario de pago");
+      }
+
+      const html = await response.text();
+      const popup = window.open("", "_blank", "width=800,height=600");
+
+      if (!popup) {
+        throw new Error("No se pudo abrir la ventana de pago");
+      }
+
+      popup.document.write(html);
+      localStorage.setItem("orderData", JSON.stringify(orderData));
+
+      toast({
+        title: "¡Pedido iniciado!",
+        description:
+          "Completa la transacción en la ventana emergente. No la cierres ni recargues esta página.",
+      });
+
+      clearCart();
+    } catch (error) {
+      console.error(error);
+      localStorage.removeItem("orderData");
+
+      toast({
+        title: "Error al iniciar el pago",
+        description:
+          "Por favor intenta nuevamente. Si el problema persiste, revisa tu conexión.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (cart.length === 0) {
@@ -433,7 +482,9 @@ export function CartPage() {
               </div>
             </div>
             <Button
-              type="submit"
+              type="button"
+              onClick={handleSubmit}
+              variant="default"
               disabled={!formValid || isSubmitting}
               className="w-full mt-6 bg-gray-600 text-white disabled:cursor-not-allowed disabled:opacity-60 hover:bg-gray-800"
             >
