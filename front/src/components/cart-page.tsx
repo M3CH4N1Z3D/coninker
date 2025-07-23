@@ -112,7 +112,6 @@ export function CartPage() {
           "Completa la transacción en la ventana emergente. No la cierres ni recargues esta página.",
       });
 
-      clearCart();
     } catch (error) {
       console.error(error);
       localStorage.removeItem("orderData");

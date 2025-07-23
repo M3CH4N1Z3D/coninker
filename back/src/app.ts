@@ -56,6 +56,14 @@ app.get("/", (req: Request, res: Response) => {
   res.send("coninker Backend is running!");
 });
 
+// Endpoint para recibir notificaciones de PayU (webhook)
+app.post("/api/payments/webhook", express.json(), (req: Request, res: Response) => {
+  // Aquí puedes validar la firma y procesar el estado del pago
+  console.log("Notificación recibida de PayU:", req.body);
+  // TODO: Validar firma y actualizar estado de la orden en la base de datos
+  res.status(200).send("OK");
+});
+
 // --- Mount Module Routers ---
 app.use("/api/admins", adminRoutes);
 app.use("/api/products", productRoutes);
