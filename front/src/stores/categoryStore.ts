@@ -12,7 +12,10 @@ export const useCategoryStore = create<CategoryState>()(
       fetchCategories: async () => {
         set({ isLoading: true });
         try {
-          const res = await fetch("http://localhost:3001/api/categories");
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+          const res = await fetch(
+            `https://903b354h-3001.use2.devtunnels.ms/api/categories`
+          );
           const data = await res.json();
           set({ categories: data.categories });
         } catch (error) {

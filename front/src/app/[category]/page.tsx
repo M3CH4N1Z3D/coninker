@@ -15,7 +15,7 @@ export default function CategoryPage() {
   const [loading, setLoading] = useState(true);
   const [categoryName, setCategoryName] = useState("");
 
-  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   useEffect(() => {
     const fetchProductsByCategory = async () => {

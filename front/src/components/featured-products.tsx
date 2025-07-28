@@ -18,7 +18,7 @@ import { features } from "@/lib/features";
 export function FeaturedProducts() {
   const [scenes, setScenes] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   useEffect(() => {
     const fetchScenes = async () => {

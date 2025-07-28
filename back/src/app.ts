@@ -25,7 +25,8 @@ const allowedOrigins =
     : [
         "http://localhost:3000",
         "https://903b354h-3000.use2.devtunnels.ms",
-        "http://192.168.128.9:3000",
+        "http://192.168.128.12:3000",
+        "https://903b354h-3001.use2.devtunnels.ms",
       ]; // Allow localhost for development
 
 app.use(
@@ -57,12 +58,16 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Endpoint para recibir notificaciones de PayU (webhook)
-app.post("/api/payments/webhook", express.json(), (req: Request, res: Response) => {
-  // Aquí puedes validar la firma y procesar el estado del pago
-  console.log("Notificación recibida de PayU:", req.body);
-  // TODO: Validar firma y actualizar estado de la orden en la base de datos
-  res.status(200).send("OK");
-});
+app.post(
+  "/api/payments/webhook",
+  express.json(),
+  (req: Request, res: Response) => {
+    // Aquí puedes validar la firma y procesar el estado del pago
+    console.log("Notificación recibida de PayU:", req.body);
+    // TODO: Validar firma y actualizar estado de la orden en la base de datos
+    res.status(200).send("OK");
+  }
+);
 
 // --- Mount Module Routers ---
 app.use("/api/admins", adminRoutes);
