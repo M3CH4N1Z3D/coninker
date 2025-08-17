@@ -14,7 +14,7 @@ export const useCategoryStore = create<CategoryState>()(
         try {
           const apiUrl = process.env.NEXT_PUBLIC_API_URL;
           const res = await fetch(
-            `https://903b354h-3001.use2.devtunnels.ms/api/categories`
+            `https://zgkfb4d3-3001.use2.devtunnels.ms/api/categories`
           );
           const data = await res.json();
           set({ categories: data.categories });

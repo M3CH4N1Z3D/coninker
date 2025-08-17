@@ -11,25 +11,25 @@ export function Footer() {
         {/* Enlaces legales */}
         <div className="flex flex-wrap justify-center gap-6 mb-8 text-sm text-gray-400">
           <Link
-            href="#"
+            href="/terminos-y-condiciones"
             className="hover:text-[var(--hoverColor)] transition-colors"
           >
             Términos y condiciones
           </Link>
           <Link
-            href="#"
+            href="/politica-de-privacidad"
             className="hover:text-[var(--hoverColor)] transition-colors"
           >
             Políticas de privacidad
           </Link>
           <Link
-            href="#"
+            href="/contacto"
             className="hover:text-[var(--hoverColor)] transition-colors"
           >
             Contáctanos
           </Link>
           <Link
-            href="#"
+            href="/cuidados-de-las-piezas"
             className="hover:text-[var(--hoverColor)] transition-colors"
           >
             Cuidados de las piezas
